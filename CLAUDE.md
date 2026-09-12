@@ -19,6 +19,7 @@
 - `demo` フィールドは、このリポジトリの `demos/` 配下に実体があり相対パスで動く静的Webアプリ(旅費精算アプリ・傘予報)にのみ設定する。GAS製システムやCLI/Pythonツールは単体では起動できないため設定しない。`demos/` の中身は元プロジェクト(`../travel-expense-splitter/`, `../umbrella-forecast/`)からのコピーであり、このリポジトリが公開用の単独リポジトリ(GitHub: alicia0901/portfolio, GitHub Pagesで公開)であるため同梱している。元プロジェクト側を更新した場合はこちらにも反映すること。
 - `impact`(導入前後の比較)は `before → after` の数値で表示する。ほぼ全プロジェクトが `basis: "estimate"`(推測値)であり、実際に計測した数値ではない。個別の「推定」バッジは表示しない代わりに、一覧ページ上部の注記文(index.htmlの`.disclaimer`)と、`basis !== "measured"` のプロジェクトの詳細ページ下部の一文(project.htmlの`.disclaimer`)でまとめて注記している。実測データがある場合(現状は競馬AIの回収率のみ)は `basis: "measured"` にし、この注記を出さない。推測値を実測であるかのように表示しないこと。
 - ライト/ダークテーマは `prefers-color-scheme` に追従する(手動切り替えUIは無い)。
+- **`card.html`**: 電子名刺ページ。`index.html` のヒーローから「🪪 電子名刺」でリンクされている。`assets/card-qr.png`(card.html自身のURLを指すQRコード)は外部APIで一度だけ生成して同梱した静的画像で、ページ表示時に外部通信は発生しない。`assets/alicia0901.vcf` は「連絡先を保存」ボタンからダウンロードされるvCard。名前・肩書き・URLを変更する場合は `card.html` の表示・vCard・QR画像の3箇所を揃えて更新すること(QR画像の作り直し方は README.md 参照)。
 
 ## 更新時の注意
 
