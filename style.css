@@ -560,6 +560,14 @@ ul.arch-list li::before{
   width: 100%;
   transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
+button.btn{
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  appearance: none;
+  -webkit-appearance: none;
+}
+button.btn.btn-secondary{ border: 1px solid var(--cp-panel-border); }
 .btn:hover{ text-decoration:none; transform: translateY(-1px); }
 .btn-primary{
   background: linear-gradient(120deg, var(--cp-glow-1), var(--cp-glow-2));

@@ -32,7 +32,8 @@
     </div>
 
     <div class="bc-actions">
-      <a class="btn btn-primary" href="index.html">ポートフォリオを見る →</a>
+      <button type="button" class="btn btn-primary" id="shareBtn">🔗 名刺を共有する</button>
+      <a class="btn btn-secondary" href="index.html">ポートフォリオを見る →</a>
       <a class="btn btn-secondary" href="assets/alicia0901.vcf" download>連絡先を保存 (vCard)</a>
     </div>
 
@@ -40,12 +41,58 @@
       <div class="bc-qr-frame">
         <img src="assets/card-qr.png" alt="この名刺ページへのQRコード" width="130" height="130">
       </div>
-      <span>SCAN TO OPEN THIS CARD</span>
+      <span>相手にこのQRを見せて読み取ってもらう</span>
     </div>
 
     <p class="bc-stamp">alicia0901.github.io/portfolio</p>
   </div>
 </div>
+
+<script>
+(function(){
+  var CARD_URL = "https://alicia0901.github.io/portfolio/card.html";
+  var btn = document.getElementById("shareBtn");
+  var originalLabel = btn.textContent;
+  var resetTimer = null;
+
+  function showFeedback(label){
+    clearTimeout(resetTimer);
+    btn.textContent = label;
+    resetTimer = setTimeout(function(){ btn.textContent = originalLabel; }, 2200);
+  }
+
+  btn.addEventListener("click", async function(){
+    var shareData = {
+      title: "alicia0901 | 電子名刺",
+      text: "業務システム開発(予約システム・自動化)が得意な個人開発者です。",
+      url: CARD_URL
+    };
+
+    // スマホ等、共有シート(LINE/メール/メッセージ等)が使える場合はそちらを優先
+    if(navigator.share){
+      try{
+        await navigator.share(shareData);
+      }catch(err){
+        // ユーザーがキャンセルした場合などは何もしない
+      }
+      return;
+    }
+
+    // 共有シートが無い環境(主にPCブラウザ)はリンクをクリップボードにコピー
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      try{
+        await navigator.clipboard.writeText(CARD_URL);
+        showFeedback("✅ リンクをコピーしました");
+        return;
+      }catch(err){
+        // フォールバックへ
+      }
+    }
+
+    window.prompt("このリンクをコピーして渡してください", CARD_URL);
+  });
+})();
+</script>
 
 </body>
 </html>
