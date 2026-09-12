@@ -350,56 +350,170 @@ ul.arch-list li::before{
   padding: 3rem 0;
 }
 
-/* ---- 電子名刺 (card.html) 専用 ---- */
+/* ---- 電子名刺 (card.html) 専用 ----
+   このページだけは prefers-color-scheme に依存せず、常時ダーク基調の固定デザインにする。
+   トークンはグローバルの --bg 等を上書きせず .card-page 内に閉じたローカル変数として定義する。 */
 
 .card-page{
+  --cp-bg: #0a0c12;
+  --cp-glow-1: #ff8a4c;
+  --cp-glow-2: #ff5f8f;
+  --cp-panel: rgba(255,255,255,0.045);
+  --cp-panel-border: rgba(255,255,255,0.09);
+  --cp-ink: #f3f1ec;
+  --cp-ink-dim: #9b98a8;
+  --cp-chip-bg: rgba(255,255,255,0.06);
+  --cp-chip-border: rgba(255,255,255,0.1);
+
   position: relative;
   min-height: 100vh;
   display:flex;
   align-items:center;
   justify-content:center;
-  padding: 2.5rem 0;
+  padding: 3rem 1rem;
+  background: var(--cp-bg);
+  color: var(--cp-ink);
+  overflow: hidden;
 }
 
+/* 背景のグロー + うっすらしたドットグリッド */
+.card-page::before{
+  content:"";
+  position:absolute;
+  inset: -20%;
+  background:
+    radial-gradient(38% 32% at 24% 12%, color-mix(in srgb, var(--cp-glow-1) 32%, transparent), transparent 70%),
+    radial-gradient(34% 30% at 82% 82%, color-mix(in srgb, var(--cp-glow-2) 26%, transparent), transparent 70%);
+  filter: blur(10px);
+  pointer-events:none;
+}
+.card-page::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background-image: radial-gradient(rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 26px 26px;
+  mask-image: radial-gradient(60% 60% at 50% 40%, black, transparent 90%);
+  pointer-events:none;
+}
+
+.card-page .back-link{
+  position: absolute;
+  top: 1.6rem;
+  left: 1.6rem;
+  z-index: 2;
+  color: var(--cp-ink-dim);
+}
+.card-page .back-link:hover{ color: var(--cp-ink); }
+
 .business-card{
+  position: relative;
+  z-index: 1;
   width: 100%;
-  max-width: 400px;
-  background: var(--bg-elev);
-  border: 1px solid var(--line);
-  border-radius: 20px;
-  box-shadow: var(--shadow);
-  padding: 2.2rem 2rem 2rem;
+  max-width: 380px;
+  background: var(--cp-panel);
+  border: 1px solid var(--cp-panel-border);
+  border-radius: 22px;
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,0.02) inset,
+    0 30px 60px -20px rgba(0,0,0,0.6);
+  padding: 0 1.9rem 2rem;
   display:flex;
   flex-direction:column;
   align-items:center;
   text-align:center;
-  gap: 1.1rem;
+  gap: 1.15rem;
+  overflow: hidden;
+}
+
+/* 上部の虹彩グラデーションバー */
+.business-card::before{
+  content:"";
+  display:block;
+  width: 100%;
+  height: 5px;
+  margin: 0 -1.9rem;
+  background: linear-gradient(90deg, var(--cp-glow-1), #ffcf6b, var(--cp-glow-2), var(--cp-glow-1));
+  background-size: 300% 100%;
+  animation: cp-shimmer 6s linear infinite;
+}
+@keyframes cp-shimmer{
+  0%{ background-position: 0% 0; }
+  100%{ background-position: 300% 0; }
+}
+@media (prefers-reduced-motion: reduce){
+  .business-card::before{ animation: none; }
 }
 
 .bc-avatar{
-  width: 72px;
-  height: 72px;
+  margin-top: 1.9rem;
+  width: 78px;
+  height: 78px;
   border-radius: 50%;
-  background: var(--accent);
-  color: var(--accent-ink);
+  padding: 3px;
+  background: conic-gradient(from 180deg, var(--cp-glow-1), #ffcf6b, var(--cp-glow-2), var(--cp-glow-1));
   display:flex;
   align-items:center;
   justify-content:center;
-  font-size: 1.8rem;
-  font-weight: 700;
-  letter-spacing: 0;
+}
+.bc-avatar span{
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: #14121c;
+  color: var(--cp-ink);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size: 1.9rem;
+  font-weight: 800;
+  font-family: "Consolas", "SFMono-Regular", Menlo, monospace;
 }
 
 .bc-name{
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 1.55rem;
+  font-weight: 800;
   letter-spacing: -0.01em;
 }
+.bc-handle{
+  margin: -0.85rem 0 0;
+  font-family: "Consolas", "SFMono-Regular", Menlo, monospace;
+  font-size: 0.8rem;
+  color: var(--cp-glow-1);
+  letter-spacing: 0.02em;
+}
 .bc-title{
-  margin: -0.6rem 0 0;
+  margin: 0;
   font-size: 0.92rem;
-  color: var(--ink-dim);
-  max-width: 320px;
+  color: var(--cp-ink-dim);
+  max-width: 300px;
+  line-height: 1.55;
+}
+
+.bc-divider{
+  width: 100%;
+  border: none;
+  border-top: 1px dashed var(--cp-panel-border);
+  margin: 0;
+}
+
+.bc-tags{
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:center;
+  gap: 0.4rem;
+}
+.bc-tags span{
+  font-size: 0.72rem;
+  font-weight: 600;
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  background: var(--cp-chip-bg);
+  border: 1px solid var(--cp-chip-border);
+  color: var(--cp-ink-dim);
 }
 
 .bc-contact{
@@ -407,21 +521,26 @@ ul.arch-list li::before{
   display:flex;
   flex-direction:column;
   gap: 0.5rem;
-  padding-top: 0.3rem;
 }
 .bc-contact a{
   display:flex;
   align-items:center;
   justify-content:center;
   gap: 0.45rem;
-  font-size: 0.92rem;
+  font-size: 0.9rem;
   font-weight: 600;
-  padding: 0.6rem 0.8rem;
+  padding: 0.65rem 0.8rem;
   border-radius: 10px;
-  background: var(--chip-bg);
-  color: var(--ink);
+  background: var(--cp-chip-bg);
+  border: 1px solid var(--cp-chip-border);
+  color: var(--cp-ink);
+  font-family: "Consolas", "SFMono-Regular", Menlo, monospace;
 }
-.bc-contact a:hover{ text-decoration:none; background: var(--accent); color: var(--accent-ink); }
+.bc-contact a:hover{
+  text-decoration:none;
+  border-color: var(--cp-glow-1);
+  color: #fff;
+}
 
 .bc-actions{
   width:100%;
@@ -436,45 +555,56 @@ ul.arch-list li::before{
   gap: 0.4rem;
   font-size: 0.92rem;
   font-weight: 700;
-  padding: 0.7rem 1rem;
-  border-radius: 10px;
+  padding: 0.75rem 1rem;
+  border-radius: 11px;
   width: 100%;
+  transition: transform 0.15s ease, box-shadow 0.15s ease, filter 0.15s ease;
 }
-.btn:hover{ text-decoration:none; }
+.btn:hover{ text-decoration:none; transform: translateY(-1px); }
 .btn-primary{
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: linear-gradient(120deg, var(--cp-glow-1), var(--cp-glow-2));
+  color: #1a1010;
+  box-shadow: 0 10px 24px -8px color-mix(in srgb, var(--cp-glow-1) 65%, transparent);
 }
+.btn-primary:hover{ filter: brightness(1.07); }
 .btn-secondary{
   background: transparent;
-  color: var(--ink);
-  border: 1px solid var(--line);
+  color: var(--cp-ink);
+  border: 1px solid var(--cp-panel-border);
 }
+.btn-secondary:hover{ border-color: var(--cp-glow-1); color: #fff; }
 
 .bc-qr{
   display:flex;
   flex-direction:column;
   align-items:center;
-  gap: 0.5rem;
-  padding-top: 0.6rem;
-  border-top: 1px solid var(--line);
+  gap: 0.55rem;
+  padding-top: 0.5rem;
   width: 100%;
 }
+.bc-qr .bc-qr-frame{
+  padding: 10px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, var(--cp-glow-1), var(--cp-glow-2));
+}
 .bc-qr img{
-  width: 140px;
-  height: 140px;
-  border-radius: 10px;
+  display:block;
+  width: 130px;
+  height: 130px;
+  border-radius: 8px;
   background: #fff;
   padding: 8px;
-  border: 1px solid var(--line);
 }
 .bc-qr span{
-  font-size: 0.76rem;
-  color: var(--ink-dim);
+  font-size: 0.72rem;
+  color: var(--cp-ink-dim);
+  font-family: "Consolas", "SFMono-Regular", Menlo, monospace;
 }
 
-.card-page .back-link{
-  position: absolute;
-  top: 1.6rem;
-  left: 1.6rem;
+.bc-stamp{
+  margin-top: -0.3rem;
+  font-size: 0.68rem;
+  color: var(--cp-ink-dim);
+  font-family: "Consolas", "SFMono-Regular", Menlo, monospace;
+  letter-spacing: 0.03em;
 }
