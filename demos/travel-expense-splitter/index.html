@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>旅費精算アプリ</title>
+<style>
+  :root {
+    --bg: #f5f6f8;
+    --card-bg: #ffffff;
+    --text: #1f2430;
+    --text-sub: #6b7280;
+    --border: #e5e7eb;
+    --accent: #2563eb;
+    --accent-hover: #1d4ed8;
+    --danger: #dc2626;
+    --danger-hover: #b91c1c;
+    --positive: #16a34a;
+    --negative: #dc2626;
+    --chip-bg: #eef2ff;
+    --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN", "Hiragino Sans", Meiryo, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.5;
+    padding: 24px 16px 80px;
+  }
+  .wrap { max-width: 760px; margin: 0 auto; }
+  h1 { font-size: 22px; margin: 0 0 4px; }
+  .subtitle { color: var(--text-sub); font-size: 13px; margin: 0 0 24px; }
+  .card {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: var(--shadow);
+    margin-bottom: 20px;
+  }
+  .card h2 {
+    font-size: 15px;
+    margin: 0 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .card h2 .badge {
+    background: var(--accent);
+    color: #fff;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    flex-shrink: 0;
+  }
+  label { font-size: 12px; color: var(--text-sub); display: block; margin-bottom: 4px; }
+  input[type="text"], input[type="number"] {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+    color: var(--text);
+  }
+  input:focus, select:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+  select {
+    width: 100%;
+    padding: 9px 10px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+    color: var(--text);
+  }
+  .row { display: flex; gap: 8px; }
+  .row > * { flex: 1; }
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    padding: 9px 16px;
+    transition: background 0.15s;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: var(--accent-hover); }
+  .btn-ghost { background: transparent; color: var(--text-sub); padding: 4px 8px; font-weight: 400; }
+  .btn-ghost:hover { color: var(--danger); }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .chip {
+    background: var(--chip-bg);
+    color: var(--accent);
+    padding: 6px 8px 6px 12px;
+    border-radius: 999px;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .chip button {
+    background: none;
+    color: var(--accent);
+    padding: 0 2px;
+    font-size: 15px;
+    line-height: 1;
+    font-weight: 700;
+  }
+  .chip button:hover { color: var(--danger); }
+  .split-targets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 14px;
+    margin-top: 6px;
+    padding: 10px;
+    background: #fafafa;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+  }
+  .split-targets label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    color: var(--text);
+    margin: 0;
+    cursor: pointer;
+  }
+  .split-targets input[type="checkbox"] { width: auto; }
+  .split-actions { display: flex; gap: 6px; margin-top: 8px; }
+  .split-actions button { font-size: 12px; padding: 4px 10px; background: #eee; color: var(--text-sub); }
+  .split-actions button:hover { background: #ddd; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th, td { text-align: left; padding: 8px 6px; border-bottom: 1px solid var(--border); }
+  th { color: var(--text-sub); font-weight: 600; font-size: 12px; }
+  td.amount, th.amount { text-align: right; font-variant-numeric: tabular-nums; }
+  .empty { color: var(--text-sub); font-size: 13px; padding: 12px 0; text-align: center; }
+  .expense-desc { font-weight: 600; }
+  .expense-meta { color: var(--text-sub); font-size: 12px; }
+  .expense-row { display: flex; justify-content: space-between; align-items: flex-start; padding: 10px 0; border-bottom: 1px solid var(--border); gap: 8px; }
+  .expense-row:last-child { border-bottom: none; }
+  .balance-positive { color: var(--positive); font-weight: 600; }
+  .balance-negative { color: var(--negative); font-weight: 600; }
+  .balance-zero { color: var(--text-sub); }
+  .settlement-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    background: #f0f9ff;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    font-size: 14px;
+  }
+  .settlement-item .arrow { color: var(--accent); font-weight: 700; }
+  .settlement-amount { margin-left: auto; font-weight: 700; color: var(--accent); font-variant-numeric: tabular-nums; }
+  .footer-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 4px; }
+  .footer-actions button { background: transparent; color: var(--text-sub); border: 1px solid var(--border); }
+  .footer-actions button:hover { background: #f3f4f6; color: var(--danger); border-color: var(--danger); }
+  .total-line { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-sub); margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--border); }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #15161a;
+      --card-bg: #1e2027;
+      --text: #e5e7eb;
+      --text-sub: #9ca3af;
+      --border: #33363f;
+      --chip-bg: #26304a;
+      --shadow: 0 1px 3px rgba(0,0,0,0.4);
+    }
+    input[type="text"], input[type="number"], select { background: #262933; border-color: #33363f; color: var(--text); }
+    .split-targets { background: #262933; }
+    .settlement-item { background: #1a2b3d; }
+    .footer-actions button { background: transparent; }
+    .split-actions button { background: #2a2d36; color: var(--text-sub); }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>旅費精算アプリ</h1>
+  <p class="subtitle">誰がいくら立て替えたかを入力すると、精算に必要な送金を自動計算します。</p>
+
+  <div class="card">
+    <h2><span class="badge">1</span>参加者</h2>
+    <div class="row">
+      <input type="text" id="nameInput" placeholder="名前を入力（例: 田中）" maxlength="20">
+      <button class="btn-primary" id="addNameBtn" style="flex:0 0 auto;">追加</button>
+    </div>
+    <div class="chips" id="peopleChips"></div>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge">2</span>支出を登録</h2>
+    <div id="expenseForm">
+      <label for="descInput">内容</label>
+      <input type="text" id="descInput" placeholder="例: 宿泊費、電車代など" maxlength="40" style="margin-bottom:10px;">
+      <div class="row" style="margin-bottom:10px;">
+        <div>
+          <label for="amountInput">金額（円）</label>
+          <input type="number" id="amountInput" placeholder="0" min="0" step="1">
+        </div>
+        <div>
+          <label for="payerSelect">支払った人</label>
+          <select id="payerSelect"></select>
+        </div>
+      </div>
+      <label>対象者（費用を分担する人）</label>
+      <div class="split-targets" id="splitTargets"></div>
+      <div class="split-actions">
+        <button type="button" id="selectAllBtn">全員選択</button>
+        <button type="button" id="selectNoneBtn">選択解除</button>
+      </div>
+      <div style="margin-top:14px; text-align:right;">
+        <button class="btn-primary" id="addExpenseBtn">支出を追加</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge">3</span>支出一覧</h2>
+    <div id="expenseList"><div class="empty">まだ支出が登録されていません</div></div>
+    <div class="total-line" id="totalLine" style="display:none;">
+      <span>合計</span><span id="totalAmount"></span>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="badge">4</span>収支と精算結果</h2>
+    <table id="balanceTable" style="display:none;">
+      <thead>
+        <tr><th>名前</th><th class="amount">支払った額</th><th class="amount">負担すべき額</th><th class="amount">収支</th></tr>
+      </thead>
+      <tbody id="balanceBody"></tbody>
+    </table>
+    <div id="settlementList" style="margin-top:16px;"></div>
+  </div>
+
+  <div class="footer-actions">
+    <button id="resetBtn">すべてリセット</button>
+  </div>
+</div>
+
+<script>
+const STORAGE_KEY = 'travel-expense-splitter-v1';
+
+let state = {
+  people: [],
+  expenses: [] // {id, desc, amount, payer, targets: [names]}
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (parsed && Array.isArray(parsed.people) && Array.isArray(parsed.expenses)) {
+        state = parsed;
+      }
+    }
+  } catch (e) { /* ignore corrupt storage */ }
+}
+
+function saveState() {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+}
+
+function yen(n) {
+  return '¥' + Math.round(n).toLocaleString('ja-JP');
+}
+
+function uid() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+// ---------- People ----------
+const nameInput = document.getElementById('nameInput');
+const addNameBtn = document.getElementById('addNameBtn');
+const peopleChips = document.getElementById('peopleChips');
+
+function addPerson() {
+  const name = nameInput.value.trim();
+  if (!name) return;
+  if (state.people.includes(name)) {
+    nameInput.value = '';
+    return;
+  }
+  state.people.push(name);
+  nameInput.value = '';
+  saveState();
+  renderAll();
+  nameInput.focus();
+}
+
+function removePerson(name) {
+  const usedIn = state.expenses.filter(e => e.payer === name || e.targets.includes(name));
+  if (usedIn.length > 0) {
+    if (!confirm(`「${name}」は支出に登録されています。削除すると関連する支出データも整合が取れなくなります。それでも削除しますか？`)) {
+      return;
+    }
+    state.expenses = state.expenses.filter(e => e.payer !== name);
+    state.expenses.forEach(e => { e.targets = e.targets.filter(t => t !== name); });
+  }
+  state.people = state.people.filter(p => p !== name);
+  saveState();
+  renderAll();
+}
+
+addNameBtn.addEventListener('click', addPerson);
+nameInput.addEventListener('keydown', e => { if (e.key === 'Enter') addPerson(); });
+
+function renderPeople() {
+  peopleChips.innerHTML = '';
+  if (state.people.length === 0) {
+    peopleChips.innerHTML = '<span class="empty" style="padding:0;">参加者を追加してください</span>';
+    return;
+  }
+  state.people.forEach(name => {
+    const chip = document.createElement('span');
+    chip.className = 'chip';
+    chip.innerHTML = `<span></span><button type="button" aria-label="削除">&times;</button>`;
+    chip.querySelector('span').textContent = name;
+    chip.querySelector('button').addEventListener('click', () => removePerson(name));
+    peopleChips.appendChild(chip);
+  });
+}
+
+// ---------- Expense form ----------
+const descInput = document.getElementById('descInput');
+const amountInput = document.getElementById('amountInput');
+const payerSelect = document.getElementById('payerSelect');
+const splitTargets = document.getElementById('splitTargets');
+const addExpenseBtn = document.getElementById('addExpenseBtn');
+
+function renderExpenseForm() {
+  const prevPayer = payerSelect.value;
+  payerSelect.innerHTML = '';
+  state.people.forEach(name => {
+    const opt = document.createElement('option');
+    opt.value = name; opt.textContent = name;
+    payerSelect.appendChild(opt);
+  });
+  if (state.people.includes(prevPayer)) payerSelect.value = prevPayer;
+
+  const prevChecked = new Set(
+    Array.from(splitTargets.querySelectorAll('input[type=checkbox]:checked')).map(el => el.value)
+  );
+  splitTargets.innerHTML = '';
+  if (state.people.length === 0) {
+    splitTargets.innerHTML = '<span class="empty" style="padding:0;">参加者を追加してください</span>';
+    return;
+  }
+  state.people.forEach(name => {
+    const label = document.createElement('label');
+    const checked = prevChecked.size === 0 ? true : prevChecked.has(name);
+    label.innerHTML = `<input type="checkbox" value="${name}" ${checked ? 'checked' : ''}><span></span>`;
+    label.querySelector('span').textContent = name;
+    splitTargets.appendChild(label);
+  });
+}
+
+document.getElementById('selectAllBtn').addEventListener('click', () => {
+  splitTargets.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = true);
+});
+document.getElementById('selectNoneBtn').addEventListener('click', () => {
+  splitTargets.querySelectorAll('input[type=checkbox]').forEach(cb => cb.checked = false);
+});
+
+addExpenseBtn.addEventListener('click', () => {
+  const desc = descInput.value.trim() || '(内容未入力)';
+  const amount = parseFloat(amountInput.value);
+  const payer = payerSelect.value;
+  const targets = Array.from(splitTargets.querySelectorAll('input[type=checkbox]:checked')).map(el => el.value);
+
+  if (state.people.length === 0) { alert('先に参加者を追加してください。'); return; }
+  if (!amount || amount <= 0) { alert('金額を正しく入力してください。'); return; }
+  if (!payer) { alert('支払った人を選択してください。'); return; }
+  if (targets.length === 0) { alert('対象者を1人以上選択してください。'); return; }
+
+  state.expenses.push({ id: uid(), desc, amount: Math.round(amount), payer, targets });
+  descInput.value = '';
+  amountInput.value = '';
+  saveState();
+  renderAll();
+  descInput.focus();
+});
+
+// ---------- Expense list ----------
+const expenseList = document.getElementById('expenseList');
+const totalLine = document.getElementById('totalLine');
+const totalAmount = document.getElementById('totalAmount');
+
+function removeExpense(id) {
+  state.expenses = state.expenses.filter(e => e.id !== id);
+  saveState();
+  renderAll();
+}
+
+function renderExpenseList() {
+  if (state.expenses.length === 0) {
+    expenseList.innerHTML = '<div class="empty">まだ支出が登録されていません</div>';
+    totalLine.style.display = 'none';
+    return;
+  }
+  expenseList.innerHTML = '';
+  let total = 0;
+  state.expenses.forEach(e => {
+    total += e.amount;
+    const row = document.createElement('div');
+    row.className = 'expense-row';
+    const targetsLabel = e.targets.length === state.people.length ? '全員' : e.targets.join('・');
+    row.innerHTML = `
+      <div>
+        <div class="expense-desc"></div>
+        <div class="expense-meta"></div>
+      </div>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <div class="amount" style="font-weight:600; white-space:nowrap;"></div>
+        <button type="button" class="btn-ghost" aria-label="削除">&times;</button>
+      </div>
+    `;
+    row.querySelector('.expense-desc').textContent = e.desc;
+    row.querySelector('.expense-meta').textContent = `${e.payer}さんが支払い / 対象: ${targetsLabel}`;
+    row.querySelector('.amount').textContent = yen(e.amount);
+    row.querySelector('button').addEventListener('click', () => removeExpense(e.id));
+    expenseList.appendChild(row);
+  });
+  totalLine.style.display = 'flex';
+  totalAmount.textContent = yen(total);
+}
+
+// ---------- Balance calculation ----------
+function splitAmount(amount, n) {
+  const base = Math.floor(amount / n);
+  const remainder = amount - base * n;
+  const shares = new Array(n).fill(base);
+  for (let i = 0; i < remainder; i++) shares[i] += 1;
+  return shares;
+}
+
+function computeBalances() {
+  const paid = {}, owed = {};
+  state.people.forEach(p => { paid[p] = 0; owed[p] = 0; });
+
+  state.expenses.forEach(e => {
+    if (state.people.includes(e.payer)) paid[e.payer] += e.amount;
+    const validTargets = e.targets.filter(t => state.people.includes(t));
+    if (validTargets.length === 0) return;
+    const shares = splitAmount(e.amount, validTargets.length);
+    validTargets.forEach((t, i) => { owed[t] += shares[i]; });
+  });
+
+  const balances = state.people.map(p => ({
+    name: p,
+    paid: paid[p],
+    owed: owed[p],
+    net: paid[p] - owed[p]
+  }));
+  return balances;
+}
+
+// Greedy fallback (largest debtor <-> largest creditor). Used only when the
+// group is too big for the exact search below to finish quickly.
+function greedySettlement(nonZero) {
+  const creditors = nonZero.filter(b => b.amount > 0).map(b => ({ ...b })).sort((a, b) => b.amount - a.amount);
+  const debtors = nonZero.filter(b => b.amount < 0).map(b => ({ name: b.name, amount: -b.amount })).sort((a, b) => b.amount - a.amount);
+
+  const transactions = [];
+  let i = 0, j = 0;
+  while (i < debtors.length && j < creditors.length) {
+    const d = debtors[i], c = creditors[j];
+    const amt = Math.min(d.amount, c.amount);
+    if (amt > 0) transactions.push({ from: d.name, to: c.name, amount: amt });
+    d.amount -= amt;
+    c.amount -= amt;
+    if (d.amount <= 0) i++;
+    if (c.amount <= 0) j++;
+  }
+  return transactions;
+}
+
+// Exact search for the minimum number of transactions, breaking ties in
+// favor of the fewest distinct people who have to send money. Branches on
+// (transactions.length, distinct senders) so it explores every solution
+// tied for fewest transactions, not just the first one found.
+function exactSettlement(nonZero) {
+  const ordered = nonZero.slice().sort((a, b) => Math.abs(b.amount) - Math.abs(a.amount));
+  const names = ordered.map(b => b.name);
+  const amounts = ordered.map(b => b.amount);
+
+  let best = null;
+
+  function dfs(arr, transactions) {
+    let i = -1;
+    for (let k = 0; k < arr.length; k++) {
+      if (arr[k] !== 0) { i = k; break; }
+    }
+    if (i === -1) {
+      const senderCount = new Set(transactions.map(t => t.from)).size;
+      if (!best || transactions.length < best.count ||
+          (transactions.length === best.count && senderCount < best.senderCount)) {
+        best = { count: transactions.length, senderCount, transactions: transactions.slice() };
+      }
+      return;
+    }
+    if (best && transactions.length > best.count) return;
+
+    const bi = arr[i];
+    for (let j = 0; j < arr.length; j++) {
+      if (j === i || arr[j] === 0) continue;
+      if ((bi > 0) === (arr[j] > 0)) continue; // need opposite signs
+
+      const bj = arr[j];
+      const amt = Math.min(Math.abs(bi), Math.abs(bj));
+      const tx = bi < 0
+        ? { from: names[i], to: names[j], amount: amt }
+        : { from: names[j], to: names[i], amount: amt };
+
+      const savedI = arr[i], savedJ = arr[j];
+      const combined = bi + bj;
+      // Whoever has the smaller magnitude is fully settled (zeroed); the
+      // leftover must stay under the OTHER person's name, since that's who
+      // still has money left to move. Always collapsing into slot j would
+      // mislabel the remainder as belonging to whoever j happens to be.
+      if (Math.abs(bi) <= Math.abs(bj)) {
+        arr[i] = 0;
+        arr[j] = combined;
+      } else {
+        arr[j] = 0;
+        arr[i] = combined;
+      }
+      transactions.push(tx);
+      dfs(arr, transactions);
+      transactions.pop();
+      arr[i] = savedI;
+      arr[j] = savedJ;
+    }
+  }
+
+  dfs(amounts, []);
+  return best ? best.transactions : [];
+}
+
+// Exact search is factorial in the number of unsettled people; above this
+// size fall back to the greedy heuristic so the UI never freezes.
+const EXACT_SETTLEMENT_LIMIT = 10;
+
+function computeSettlement(balances) {
+  const nonZero = balances.filter(b => b.net !== 0).map(b => ({ name: b.name, amount: b.net }));
+  if (nonZero.length === 0) return [];
+  if (nonZero.length > EXACT_SETTLEMENT_LIMIT) return greedySettlement(nonZero);
+  return exactSettlement(nonZero);
+}
+
+// ---------- Render balances + settlement ----------
+const balanceTable = document.getElementById('balanceTable');
+const balanceBody = document.getElementById('balanceBody');
+const settlementList = document.getElementById('settlementList');
+
+function renderBalances() {
+  if (state.people.length === 0 || state.expenses.length === 0) {
+    balanceTable.style.display = 'none';
+    settlementList.innerHTML = '<div class="empty">参加者と支出を登録すると、ここに精算結果が表示されます</div>';
+    return;
+  }
+
+  const balances = computeBalances();
+  balanceTable.style.display = '';
+  balanceBody.innerHTML = '';
+  balances.forEach(b => {
+    const tr = document.createElement('tr');
+    const netClass = b.net > 0 ? 'balance-positive' : (b.net < 0 ? 'balance-negative' : 'balance-zero');
+    const netLabel = b.net > 0 ? `+${yen(b.net)}` : (b.net < 0 ? `-${yen(Math.abs(b.net))}` : yen(0));
+    tr.innerHTML = `
+      <td></td>
+      <td class="amount"></td>
+      <td class="amount"></td>
+      <td class="amount ${netClass}"></td>
+    `;
+    tr.children[0].textContent = b.name;
+    tr.children[1].textContent = yen(b.paid);
+    tr.children[2].textContent = yen(b.owed);
+    tr.children[3].textContent = netLabel;
+    balanceBody.appendChild(tr);
+  });
+
+  const transactions = computeSettlement(balances);
+  settlementList.innerHTML = '';
+  if (transactions.length === 0) {
+    settlementList.innerHTML = '<div class="empty">全員の収支が一致しています。精算の必要はありません 🎉</div>';
+    return;
+  }
+  const senderCount = new Set(transactions.map(t => t.from)).size;
+  const heading = document.createElement('div');
+  heading.style.cssText = 'font-size:13px; color:var(--text-sub); margin-bottom:8px;';
+  heading.textContent = `最少 ${transactions.length} 回の送金・支払う人 ${senderCount} 人で精算できます`;
+  settlementList.appendChild(heading);
+
+  transactions.forEach(t => {
+    const item = document.createElement('div');
+    item.className = 'settlement-item';
+    item.innerHTML = `
+      <span></span><span class="arrow">→</span><span></span>
+      <span class="settlement-amount"></span>
+    `;
+    item.children[0].textContent = t.from;
+    item.children[2].textContent = t.to;
+    item.children[3].textContent = yen(t.amount);
+    settlementList.appendChild(item);
+  });
+}
+
+// ---------- Reset ----------
+document.getElementById('resetBtn').addEventListener('click', () => {
+  if (confirm('参加者・支出のすべてのデータを削除します。よろしいですか？')) {
+    state = { people: [], expenses: [] };
+    saveState();
+    renderAll();
+  }
+});
+
+// ---------- Master render ----------
+function renderAll() {
+  renderPeople();
+  renderExpenseForm();
+  renderExpenseList();
+  renderBalances();
+}
+
+loadState();
+renderAll();
+</script>
+</body>
+</html>

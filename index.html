@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Portfolio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">Portfolio</p>
+    <h1>個人開発プロジェクト集</h1>
+    <p class="lede">
+      日々の課題を自分で解決するために作った、小さめの実働システム・ツールをまとめています。
+      いずれもフレームワークやビルドに頼らず、必要最小限の構成で動かすことを意識しています。
+    </p>
+    <div class="hero-meta">
+      <span>📧 <a href="mailto:guraddo09@gmail.com">guraddo09@gmail.com</a></span>
+      <span>🗂️ 全 6 プロジェクト</span>
+    </div>
+    <nav class="filters" id="filters"></nav>
+    <p class="disclaimer">
+      ※ 各プロジェクトの「導入前後の比較」は、特に注記のない限り実際の計測データではなく、
+      機能から推測した目安です。競馬AIの回収率のみ、ウォークフォワード検証による実測値です。
+    </p>
+  </header>
+
+  <main>
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <footer class="page">
+    <span>© 2026 Portfolio</span>
+    <span>ゲーム作品は別カテゴリのため本ページには含めていません</span>
+  </footer>
+</div>
+
+<script src="data.js"></script>
+<script>
+const CATEGORIES = ["すべて", ...Array.from(new Set(PROJECTS.map(p => p.category)))];
+
+const grid = document.getElementById("grid");
+const filters = document.getElementById("filters");
+let active = "すべて";
+
+function render(){
+  grid.innerHTML = "";
+  const list = active === "すべて" ? PROJECTS : PROJECTS.filter(p => p.category === active);
+  for(const p of list){
+    const card = document.createElement("article");
+    card.className = "card";
+    const detailHref = `project.html?id=${encodeURIComponent(p.id)}`;
+    card.innerHTML = `
+      <p class="card-cat">${p.category}</p>
+      <h2><a href="${detailHref}">${p.title}</a></h2>
+      <p class="desc">${p.desc}</p>
+      <ul class="features">${p.features.map(f => `<li>${f}</li>`).join("")}</ul>
+      ${p.impact ? `
+      <div class="impact">
+        <div class="impact-head">
+          <span class="impact-title">導入前後の比較</span>
+        </div>
+        ${p.impact.metrics.map(m => `
+          <div class="impact-metric">
+            <span class="m-label">${m.label}</span>
+            <div class="impact-row">
+              <span class="before">${m.before}</span>
+              <span class="arrow">→</span>
+              <span class="after">${m.after}</span>
+            </div>
+          </div>
+        `).join("")}
+      </div>` : ""}
+      <div class="chips">${p.stack.map(s => `<span class="chip">${s}</span>`).join("")}</div>
+      <div class="card-footer">
+        <span class="path">📁 ${p.path}</span>
+        <span class="links">
+          <a href="${detailHref}">詳細を見る →</a>
+          ${p.demo ? `<a class="demo" href="${p.demo}" title="${p.demoNote || ''}">デモを開く →</a>` : ""}
+        </span>
+      </div>
+    `;
+    grid.appendChild(card);
+  }
+}
+
+function renderFilters(){
+  filters.innerHTML = "";
+  for(const c of CATEGORIES){
+    const btn = document.createElement("button");
+    btn.textContent = c;
+    if(c === active) btn.classList.add("active");
+    btn.addEventListener("click", () => {
+      active = c;
+      renderFilters();
+      render();
+    });
+    filters.appendChild(btn);
+  }
+}
+
+renderFilters();
+render();
+</script>
+
+</body>
+</html>

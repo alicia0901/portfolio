@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>傘予報 - Umbrella Forecast</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app">
+    <header class="app-header">
+      <h1><span class="logo">☂️</span> 傘予報</h1>
+      <p class="subtitle">現在地・行き先の滞在時間中に雨が降るか、傘が必要かをチェック</p>
+    </header>
+
+    <main>
+      <!-- 場所選択 -->
+      <section class="card">
+        <h2 class="card-title">1. 場所を選ぶ</h2>
+        <div class="tabs" role="tablist">
+          <button class="tab-btn active" data-tab="current" type="button">現在地</button>
+          <button class="tab-btn" data-tab="search" type="button">地名で検索</button>
+        </div>
+
+        <div class="tab-panel" id="tab-current">
+          <button id="btn-geolocate" class="btn btn-primary" type="button">
+            <span class="btn-icon">📍</span>現在地を取得
+          </button>
+          <p id="geolocate-status" class="hint"></p>
+        </div>
+
+        <div class="tab-panel hidden" id="tab-search">
+          <div class="search-row">
+            <input id="input-search" type="text" placeholder="例: 東京、大阪、札幌..." autocomplete="off">
+            <button id="btn-search" class="btn btn-secondary" type="button">検索</button>
+          </div>
+          <ul id="search-results" class="result-list"></ul>
+        </div>
+
+        <div id="selected-location" class="selected-location hidden">
+          <span class="pin">📌</span>
+          <span id="selected-location-name"></span>
+        </div>
+      </section>
+
+      <!-- 滞在時間 -->
+      <section class="card">
+        <h2 class="card-title">2. 滞在時間を指定</h2>
+        <div class="time-form">
+          <label class="field">
+            <span>日付</span>
+            <input id="input-date" type="date">
+          </label>
+          <label class="field">
+            <span>開始時刻</span>
+            <input id="input-time" type="time">
+          </label>
+          <label class="field">
+            <span>滞在時間</span>
+            <select id="input-duration">
+              <option value="1">1時間</option>
+              <option value="2">2時間</option>
+              <option value="3" selected>3時間</option>
+              <option value="6">6時間</option>
+              <option value="12">12時間</option>
+              <option value="24">24時間（終日）</option>
+            </select>
+          </label>
+        </div>
+      </section>
+
+      <button id="btn-check" class="btn btn-primary btn-large" type="button" disabled>
+        予報を確認する
+      </button>
+
+      <p id="global-status" class="hint status-area"></p>
+
+      <!-- 結果 -->
+      <section id="result-card" class="card result-card hidden">
+        <div class="verdict">
+          <div id="verdict-icon" class="verdict-icon">☀️</div>
+          <div class="verdict-text">
+            <div id="verdict-headline" class="verdict-headline">傘は不要です</div>
+            <div id="verdict-sub" class="verdict-sub"></div>
+          </div>
+        </div>
+        <div class="stat-row">
+          <div class="stat">
+            <span class="stat-label">最大降水確率</span>
+            <span id="stat-prob" class="stat-value">--%</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">合計降水量</span>
+            <span id="stat-precip" class="stat-value">--mm</span>
+          </div>
+          <div class="stat">
+            <span class="stat-label">気温</span>
+            <span id="stat-temp" class="stat-value">--°C</span>
+          </div>
+        </div>
+
+        <h3 class="hourly-title">時間帯別の詳細</h3>
+        <div class="hourly-list" id="hourly-list"></div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <p>気象データ: <a href="https://open-meteo.com/" target="_blank" rel="noopener">Open-Meteo</a> ／ 逆ジオコーディング: <a href="https://nominatim.org/" target="_blank" rel="noopener">OpenStreetMap Nominatim</a></p>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

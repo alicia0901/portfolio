@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Project | Portfolio</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="wrap" id="app">
+  <!-- JSで描画されるまでの間の最小限のプレースホルダ -->
+</div>
+
+<script src="data.js"></script>
+<script>
+function getProject(){
+  const params = new URLSearchParams(location.search);
+  const id = params.get("id");
+  return PROJECTS.find(p => p.id === id) || null;
+}
+
+function renderNotFound(){
+  document.getElementById("app").innerHTML = `
+    <div class="not-found">
+      <a class="back-link" href="index.html">← ポートフォリオに戻る</a>
+      <h1>プロジェクトが見つかりません</h1>
+      <p class="lede">指定されたプロジェクトIDが存在しません。一覧から選び直してください。</p>
+    </div>
+  `;
+}
+
+function renderProject(p){
+  document.title = `${p.title} | Portfolio`;
+
+  const impactHtml = p.impact ? `
+    <section class="detail-section">
+      <h2>導入前後の比較</h2>
+      <div class="detail-impact-grid">
+        ${p.impact.metrics.map(m => `
+          <div class="impact">
+            <div class="impact-metric">
+              <span class="m-label">${m.label}</span>
+              <div class="impact-row">
+                <span class="before">${m.before}</span>
+                <span class="arrow">→</span>
+                <span class="after">${m.after}</span>
+              </div>
+            </div>
+          </div>
+        `).join("")}
+      </div>
+      ${p.impact.basis !== "measured" ? `<p class="disclaimer">※ 実際の計測データではなく、機能から推測した目安です。</p>` : ""}
+    </section>
+  ` : "";
+
+  document.getElementById("app").innerHTML = `
+    <a class="back-link" href="index.html">← ポートフォリオに戻る</a>
+
+    <header class="detail-hero">
+      <p class="eyebrow">${p.category}</p>
+      <h1>${p.title}</h1>
+      <p class="desc">${p.desc}</p>
+      <div class="chips">${p.stack.map(s => `<span class="chip">${s}</span>`).join("")}</div>
+    </header>
+
+    ${p.story ? `
+    <section class="detail-section">
+      <h2>開発の背景</h2>
+      <p class="story-text">${p.story}</p>
+    </section>` : ""}
+
+    <section class="detail-section">
+      <h2>主な機能</h2>
+      <ul class="features">${p.features.map(f => `<li>${f}</li>`).join("")}</ul>
+    </section>
+
+    ${p.architecture ? `
+    <section class="detail-section">
+      <h2>技術的な工夫・設計判断</h2>
+      <ul class="arch-list">${p.architecture.map(a => `<li>${a}</li>`).join("")}</ul>
+    </section>` : ""}
+
+    ${impactHtml}
+
+    <section class="detail-section">
+      <h2>アクセス</h2>
+      <div class="detail-footer-links">
+        <span class="path">📁 ${p.path}</span>
+        ${p.demo ? `<a class="demo" href="${p.demo}" title="${p.demoNote || ''}">デモを開く →</a>` : ""}
+      </div>
+    </section>
+  `;
+}
+
+const project = getProject();
+if(project){
+  renderProject(project);
+}else{
+  renderNotFound();
+}
+</script>
+
+</body>
+</html>
