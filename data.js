@@ -12,7 +12,8 @@
 //   architecture : 技術的な工夫・設計判断(箇条書き)。任意項目、詳細ページにのみ表示
 //   stack    : 技術スタックのタグ
 //   path     : フォルダ/エントリーファイルの相対パス(表示用テキスト)
-//   demo     : file://で直接開いても相対パスで動く静的Webアプリのみ指定(一覧・詳細どちらにも「デモを開く」リンクが出る)
+//   demo     : 「デモを開く」リンクの遷移先(一覧・詳細どちらにも出る)。demos/ 配下の静的Webアプリへの相対パスか、
+//              実際にデプロイして動作確認済みの外部URLのみ指定
 //   demoNote : demoリンクのtitle属性に出す注記(任意)
 //   impact   : 導入前後の比較。basis は "estimate"(推定, 既定) か "measured"(実測) のいずれか。
 //              ページ上には「推定」「実測」の個別バッジは表示しない(ページ上部の注記文だけで示す)が、
@@ -172,10 +173,12 @@ const PROJECTS = [
       "better-sqlite3によりDBをファイル1つに閉じ込め、外部DBサーバなしで素早く動かせる構成にした",
       "Node.js標準の node:test のみで21件の自動テスト(ストリーク計算・タイムゾーン境界・認証・他ユーザーのデータへのアクセス拒否)を書き、GitHub Actions で push ごとに Node 20/22 で実行",
       "「今日」をサーバのUTCではなく日本時間で判定(UTC基準だと朝9時前の記録が前日扱いになる不具合を修正し、日付の切り替わり境界をテストで検証)",
-      "DB+APIを持つ構成のためGitHub Pages(静的ホスティング)上では動作しない。ソース全体をGitHubの独立リポジトリとして公開し、clone + npm start でローカル起動できるようにした"
+      "DB+APIを持つ構成のためGitHub Pagesではなく Render にデプロイ。署名鍵はRender側で自動生成し、本番で未設定なら起動を拒否。登録・ログインにはIP単位のレート制限を設けた"
     ],
     stack: ["Node.js", "Express", "SQLite", "JWT", "GitHub Actions"],
     path: "https://github.com/alicia0901/habit-tracker",
+    demo: "https://habit-tracker-6251.onrender.com",
+    demoNote: "Renderの無料プランで公開中。初回表示に30秒〜1分かかる場合があり、登録データは再起動でリセットされます",
     impact: {
       basis: "estimate",
       metrics: [
