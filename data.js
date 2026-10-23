@@ -170,9 +170,11 @@ const PROJECTS = [
       "ストリーク計算(今日が未達成でも昨日までの連続を継続中とみなす仕様)を computeStreak() に一本化し、一覧・トグル・ログ取得すべてから共通利用",
       "habit_logs に (habit_id, date) のUNIQUE制約を張り、同日の重複記録をDBレベルで防止",
       "better-sqlite3によりDBをファイル1つに閉じ込め、外部DBサーバなしで素早く動かせる構成にした",
+      "Node.js標準の node:test のみで21件の自動テスト(ストリーク計算・タイムゾーン境界・認証・他ユーザーのデータへのアクセス拒否)を書き、GitHub Actions で push ごとに Node 20/22 で実行",
+      "「今日」をサーバのUTCではなく日本時間で判定(UTC基準だと朝9時前の記録が前日扱いになる不具合を修正し、日付の切り替わり境界をテストで検証)",
       "DB+APIを持つ構成のためGitHub Pages(静的ホスティング)上では動作しない。ソース全体をGitHubの独立リポジトリとして公開し、clone + npm start でローカル起動できるようにした"
     ],
-    stack: ["Node.js", "Express", "SQLite", "JWT"],
+    stack: ["Node.js", "Express", "SQLite", "JWT", "GitHub Actions"],
     path: "https://github.com/alicia0901/habit-tracker",
     impact: {
       basis: "estimate",
