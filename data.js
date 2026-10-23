@@ -153,5 +153,32 @@ const PROJECTS = [
         { label: "使用するツールの数", before: "3〜4個", after: "1個" }
       ]
     }
+  },
+  {
+    id: "habit-tracker",
+    category: "Web App",
+    title: "習慣トラッカー",
+    desc: "日々の習慣を記録し、連続達成日数(ストリーク)と直近30日の達成状況をヒートマップで可視化するフルスタックWebアプリ。",
+    story: "他の案件がGASや静的フロントエンドのみで完結する構成に偏っていたため、自前でDB・API・認証を持つ構成の実装力を示す目的で作った。",
+    features: [
+      "ユーザー登録・ログイン(JWT認証)。習慣データはユーザーごとに分離",
+      "習慣の追加・今日の達成チェック・削除",
+      "現在のストリークと最長ストリークをサーバ側で算出し、直近30日をヒートマップ表示"
+    ],
+    architecture: [
+      "セッションを持たないステートレスなJWT認証とし、APIサーバをスケールしやすい構成にした",
+      "ストリーク計算(今日が未達成でも昨日までの連続を継続中とみなす仕様)を computeStreak() に一本化し、一覧・トグル・ログ取得すべてから共通利用",
+      "habit_logs に (habit_id, date) のUNIQUE制約を張り、同日の重複記録をDBレベルで防止",
+      "better-sqlite3によりDBをファイル1つに閉じ込め、外部DBサーバなしで素早く動かせる構成にした",
+      "DB+APIを持つ構成のためGitHub Pages(静的ホスティング)上では動作しない。ソース全体をGitHubの独立リポジトリとして公開し、clone + npm start でローカル起動できるようにした"
+    ],
+    stack: ["Node.js", "Express", "SQLite", "JWT"],
+    path: "https://github.com/alicia0901/habit-tracker",
+    impact: {
+      basis: "estimate",
+      metrics: [
+        { label: "習慣の継続状況を把握する時間", before: "手帳を見返して約2分", after: "一覧表示で約5秒" }
+      ]
+    }
   }
 ];
