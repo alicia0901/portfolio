@@ -15,6 +15,8 @@
 //   demo     : 「デモを開く」リンクの遷移先(一覧・詳細どちらにも出る)。demos/ 配下の静的Webアプリへの相対パスか、
 //              実際にデプロイして動作確認済みの外部URLのみ指定
 //   demoNote : demoリンクのtitle属性に出す注記(任意)
+//   screenshot : { src, alt, width, height }。任意。一覧カード上部(16:10で上端から切り抜き)と詳細ページに表示する。
+//              実際にアプリを動かして撮影した画像のみ(サンプル入力は可、APIレスポンスの差し替えや合成は不可)
 //   impact   : 導入前後の比較。basis は "estimate"(推定, 既定) か "measured"(実測) のいずれか。
 //              ページ上には「推定」「実測」の個別バッジは表示しない(ページ上部の注記文だけで示す)が、
 //              basis自体はデータの性質を管理するために残しているので、実測データが無い限り "measured" にしないこと。
@@ -38,6 +40,12 @@ const PROJECTS = [
     stack: ["HTML", "Vanilla JS", "localStorage"],
     path: "travel-expense-splitter/index.html",
     demo: "demos/travel-expense-splitter/index.html",
+    screenshot: {
+      src: "assets/screenshots/travel-expense-splitter.png",
+      alt: "4人・3件の支出を入力した精算結果。各人の支払額と負担額の差から、高橋→田中など3回の送金で精算できると表示されている",
+      width: 1440,
+      height: 1452
+    },
     impact: {
       basis: "estimate",
       metrics: [
@@ -178,6 +186,12 @@ const PROJECTS = [
     stack: ["Node.js", "Express", "SQLite", "JWT", "GitHub Actions"],
     path: "https://github.com/alicia0901/habit-tracker",
     demo: "https://habit-tracker-6251.onrender.com",
+    screenshot: {
+      src: "assets/screenshots/habit-tracker.png",
+      alt: "4つの習慣の一覧。それぞれに今日の達成チェック、現在と最長の連続日数、直近30日の達成状況を示すヒートマップが並ぶ",
+      width: 1440,
+      height: 1260
+    },
     demoNote: "Renderの無料プランで公開中。初回表示に30秒〜1分かかる場合があり、登録データは再起動でリセットされます",
     impact: {
       basis: "estimate",

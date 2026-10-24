@@ -129,6 +129,36 @@ main{ padding-top: 2.6rem; }
 }
 .card:hover{ transform: translateY(-2px); }
 
+.card-shot{
+  display:block;
+  aspect-ratio: 16 / 10;
+  overflow:hidden;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+}
+.card-shot img{
+  display:block;
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+.detail-shot{ margin: 0; max-width: 720px; }
+.detail-shot img{
+  display:block;
+  width:100%;
+  height:auto;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.detail-shot figcaption{
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  color: var(--ink-dim);
+}
+
 .card-cat{
   font-size: 0.72rem;
   letter-spacing: 0.08em;

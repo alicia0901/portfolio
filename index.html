@@ -53,6 +53,10 @@ function render(){
     card.className = "card";
     const detailHref = `project.html?id=${encodeURIComponent(p.id)}`;
     card.innerHTML = `
+      ${p.screenshot ? `
+      <a class="card-shot" href="${detailHref}" tabindex="-1">
+        <img src="${p.screenshot.src}" alt="${p.screenshot.alt}" width="${p.screenshot.width}" height="${p.screenshot.height}" loading="lazy">
+      </a>` : ""}
       <p class="card-cat">${p.category}</p>
       <h2><a href="${detailHref}">${p.title}</a></h2>
       <p class="desc">${p.desc}</p>

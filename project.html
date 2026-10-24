@@ -64,6 +64,15 @@ function renderProject(p){
       <div class="chips">${p.stack.map(s => `<span class="chip">${s}</span>`).join("")}</div>
     </header>
 
+    ${p.screenshot ? `
+    <section class="detail-section">
+      <h2>画面</h2>
+      <figure class="detail-shot">
+        <img src="${p.screenshot.src}" alt="${p.screenshot.alt}" width="${p.screenshot.width}" height="${p.screenshot.height}">
+        <figcaption>サンプルデータを入力し、実際にアプリを動かして撮影した画面です。</figcaption>
+      </figure>
+    </section>` : ""}
+
     ${p.story ? `
     <section class="detail-section">
       <h2>開発の背景</h2>

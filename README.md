@@ -21,6 +21,7 @@
 │   └── umbrella-forecast/
 ├── card.html     … 電子名刺ページ
 ├── assets/
+│   ├── screenshots/      … 一覧カード・詳細ページに出すアプリの画面(実際に動かして撮影したもの)
 │   ├── card-qr.png       … card.html自身のURLを指すQRコード(build時にAPIで生成した静的画像)
 │   └── alicia0901.vcf    … 「連絡先を保存」ボタンからダウンロードされるvCard
 ├── README.md
@@ -45,6 +46,11 @@
   stack: ["技術1", "技術2"],
   path: "フォルダ名/エントリーファイル", // 表示用テキスト。このリポジトリ内のパスとは限らない
   demo: "demos/フォルダ名/index.html", // このリポジトリ内で実際にブラウザ動作するデモがある場合のみ指定
+  screenshot: {             // 任意。実際に動かして撮影した画面のみ
+    src: "assets/screenshots/project-slug.png",
+    alt: "画面に何が写っているかの説明",
+    width: 1440, height: 900 // 画像の実寸(表示時のレイアウトずれ防止)
+  },
   impact: {
     basis: "estimate", // 実測データがある場合のみ "measured"
     metrics: [
