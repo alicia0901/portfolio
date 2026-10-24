@@ -138,32 +138,6 @@ const PROJECTS = [
     }
   },
   {
-    id: "netdiag",
-    category: "CLIツール",
-    title: "netdiag",
-    desc: "自宅ネットワークを実測で切り分けるWindows専用診断スクリプト。1コマンドで複数指標をまとめて測定する。",
-    story: "自宅ネットワークが「なんとなく遅い」と感じたときに、体感ではなく実測データで原因を切り分けたかった。",
-    features: [
-      "Wi-Fi/IPv6/遅延/経路/DNS/スループット/バッファブロートを一括計測しJSON保存",
-      "ラベル付き実行結果を比較し、設定変更の前後効果を検証できる",
-      "追加パッケージ不要。Python標準ライブラリのみで動作"
-    ],
-    architecture: [
-      "macOS専用の networkQuality コマンド(RPM値)がWindowsに存在しないため、6並列ダウンロード中にICMP pingを打ち続けアイドル時との差分からバッファブロートを独自にA+〜Fでグレーディングする代替指標を自作",
-      "Windows標準のcurl.exeとPython標準ライブラリのみに依存を絞り、追加パッケージのインストールなしでそのまま実行できるようにした",
-      "Wi-Fiのノイズ/SNRなどWindowsのAPIが公開しない値は取得不能である旨をREADMEに明記し、測定できないものを誠実に切り分けている"
-    ],
-    stack: ["Python", "標準ライブラリのみ"],
-    path: "netdiag/netdiag.py",
-    impact: {
-      basis: "estimate",
-      metrics: [
-        { label: "原因切り分けにかかる時間", before: "約45分", after: "約5分" },
-        { label: "使用するツールの数", before: "3〜4個", after: "1個" }
-      ]
-    }
-  },
-  {
     id: "habit-tracker",
     category: "Web App",
     title: "習慣トラッカー",
