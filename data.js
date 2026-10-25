@@ -194,6 +194,12 @@ const PROJECTS = [
     stack: ["HTML/CSS/JS"],
     path: "demos/kuyuri/index.html",
     demo: "demos/kuyuri/index.html",
-    demoNote: "架空店舗のデモ。予約ボタンを押しても実際の予約は行われません"
+    demoNote: "架空店舗のデモ。予約ボタンを押しても実際の予約は行われません",
+    screenshot: {
+      src: "assets/screenshots/kuyuri-lp.jpg",
+      alt: "くゆりのファーストビュー。黒い背景に縦書きの見出し「炭と、旬。」と、七輪で赤く熾った備長炭の写真",
+      width: 1519,
+      height: 784
+    }
   }
 ];
