@@ -358,8 +358,13 @@ function renderExpenseForm() {
   state.people.forEach(name => {
     const label = document.createElement('label');
     const checked = prevChecked.size === 0 ? true : prevChecked.has(name);
-    label.innerHTML = `<input type="checkbox" value="${name}" ${checked ? 'checked' : ''}><span></span>`;
-    label.querySelector('span').textContent = name;
+    const input = document.createElement('input');
+    input.type = 'checkbox';
+    input.value = name; // 利用者が入力した名前はHTMLとして解釈させない
+    input.checked = checked;
+    const span = document.createElement('span');
+    span.textContent = name;
+    label.append(input, span);
     splitTargets.appendChild(label);
   });
 }

@@ -221,8 +221,8 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
         <ul class="slots" aria-label="ご来店時間"></ul>
         <div class="picker" hidden>
           <p class="chosen" aria-live="polite"></p>
-          <label>人数<select id="people"><option>1名</option><option selected>2名</option><option>3名</option><option>4名</option><option>5名</option><option>6名</option></select></label>
-          <label>お献立<select id="course"><option value="旬のおまかせ（2時間）">旬のおまかせ</option><option value="炭火会席（2時間30分）">炭火会席</option><option value="季節の特別献立（2時間30分）">季節の特別献立</option><option value="お席のみ（2時間）">お席のみ</option></select></label>
+          <label>人数<select id="rsvPeople"><option>1名</option><option selected>2名</option><option>3名</option><option>4名</option><option>5名</option><option>6名</option></select></label>
+          <label>お献立<select id="rsvCourse"><option value="旬のおまかせ（2時間）">旬のおまかせ</option><option value="炭火会席（2時間30分）">炭火会席</option><option value="季節の特別献立（2時間30分）">季節の特別献立</option><option value="お席のみ（2時間）">お席のみ</option></select></label>
           <button class="go" type="button">ご予約に進む</button>
         </div>
         <p class="board-foot">七名さま以上・貸切のご相談は、お電話かLINEにて承ります。</p>
@@ -418,10 +418,17 @@ go.addEventListener("click", () => {
   const d = dayDate(state.day);
   const full = state.left === 0;
   dlg.querySelector("h2").textContent = full ? "キャンセル待ちのご登録内容" : "ご予約内容の確認";
-  dlg.querySelector("dl").innerHTML =
-    `<dt>日時</dt><dd>${label(d)} ${state.time}〜</dd>` +
-    `<dt>人数</dt><dd>${document.getElementById("people").value}</dd>` +
-    `<dt>お献立</dt><dd>${document.getElementById("course").value}</dd>`;
+  const dl = dlg.querySelector("dl");
+  dl.replaceChildren();
+  [
+    ["日時", `${label(d)} ${state.time}〜`],
+    ["人数", document.getElementById("rsvPeople").value],
+    ["お献立", document.getElementById("rsvCourse").value]
+  ].forEach(([k, v]) => {
+    const dt = document.createElement("dt"); dt.textContent = k;
+    const dd = document.createElement("dd"); dd.textContent = v;
+    dl.append(dt, dd);
+  });
   dlg.querySelector(".dlg-note").textContent = full
     ? "デモのため登録はされません。実際のシステムでは、お席が空いたときに自動でメールが届きます。"
     : "デモのため予約は確定しません。実際のシステムでは、ご予約の受付・確認メール・店舗カレンダーへの登録までが自動で行われます。";
