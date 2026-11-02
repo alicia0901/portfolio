@@ -3,32 +3,62 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Portfolio</title>
+<title>alicia0901 | Portfolio</title>
+<meta name="description" content="予約システムや業務の自動化を中心に、個人開発の実働システム・ツールをまとめたポートフォリオ。">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@900&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
+<div class="glow" aria-hidden="true"></div>
+
 <div class="wrap">
+  <div class="topbar">
+    <a class="brand" href="index.html">alicia0901</a>
+    <nav aria-label="ページ内">
+      <a href="#works">Works</a>
+      <a href="#contact">Contact</a>
+      <a href="card.html">電子名刺</a>
+    </nav>
+  </div>
+
   <header class="hero">
-    <p class="eyebrow">Portfolio</p>
-    <h1>個人開発プロジェクト集</h1>
-    <p class="lede">
-      日々の課題を自分で解決するために作った、小さめの実働システム・ツールをまとめています。
-      いずれもフレームワークやビルドに頼らず、必要最小限の構成で動かすことを意識しています。
-    </p>
-    <div class="hero-meta">
-      <span>📧 <a href="mailto:guraddo09@gmail.com">guraddo09@gmail.com</a></span>
-      <span>🗂️ 全 5 プロジェクト</span>
-      <span>🪪 <a href="card.html">電子名刺</a></span>
+    <div>
+      <p class="eyebrow">Portfolio</p>
+      <h1><span>日々の面倒を、</span><span class="hl">動くシステムに。</span></h1>
+      <p class="lede">
+        日々の課題を解決するために作った、小さめの実働システム・ツールをまとめています。
+        予約システムや業務の自動化が得意で、必要最小限の構成で動かすことを意識しています。
+      </p>
+      <div class="cta-row">
+        <a class="cta cta-primary" href="#works">作品を見る ↓</a>
+        <a class="cta" href="#contact">連絡する</a>
+      </div>
+      <dl class="stats" id="stats"></dl>
     </div>
-    <nav class="filters" id="filters"></nav>
-    <p class="disclaimer">
-      ※ 各プロジェクトの「導入前後の比較」は実際の計測データではなく、機能から推測した目安です。
-    </p>
+    <div class="hero-media" id="heroMedia"></div>
   </header>
 
   <main>
+    <div class="works-head" id="works">
+      <h2>Works</h2>
+      <nav class="filters" id="filters" aria-label="カテゴリで絞り込み"></nav>
+      <p class="works-note">
+        ※ 各プロジェクトの比較の数字は実際の計測データではなく、機能から推測した目安です。
+      </p>
+    </div>
     <div class="grid" id="grid"></div>
+
+    <section class="contact" id="contact">
+      <h2>お気軽にご連絡ください</h2>
+      <p>作品へのご質問やご相談は、メールで受け付けています。</p>
+      <div class="cta-row">
+        <a class="cta cta-primary" href="mailto:guraddo09@gmail.com">guraddo09@gmail.com</a>
+        <a class="cta" href="card.html">電子名刺を見る</a>
+      </div>
+    </section>
   </main>
 
   <footer class="page">
@@ -45,56 +75,101 @@ const grid = document.getElementById("grid");
 const filters = document.getElementById("filters");
 let active = "すべて";
 
+const revealer = "IntersectionObserver" in window
+  ? new IntersectionObserver(entries => {
+      for(const e of entries){
+        if(e.isIntersecting){
+          e.target.classList.add("in");
+          revealer.unobserve(e.target);
+        }
+      }
+    }, { rootMargin: "0px 0px -8% 0px" })
+  : null;
+
+// スクショありのカード(7列)と無しのカード(5列)を左右交互に並べ、余りは等幅か全幅にする
+function arrange(list){
+  const shots = list.filter(p => p.screenshot);
+  const plains = list.filter(p => !p.screenshot);
+  const out = [];
+  let row = 0;
+  while(shots.length || plains.length){
+    if(shots.length && plains.length){
+      const pair = [{ p: shots.shift(), span: 7 }, { p: plains.shift(), span: 5 }];
+      out.push(...(row % 2 ? pair.reverse() : pair));
+    }else{
+      const rest = shots.length ? shots : plains;
+      if(rest.length >= 2){
+        out.push({ p: rest.shift(), span: 6 }, { p: rest.shift(), span: 6 });
+      }else{
+        out.push({ p: rest.shift(), span: 12 });
+      }
+    }
+    row++;
+  }
+  return out;
+}
+
+// カードに出す比較は1つだけ。大きく表示しても崩れない短い値を優先する
+function headlineMetric(p){
+  if(!p.impact) return null;
+  return p.impact.metrics.find(m => m.after.length <= 6) || p.impact.metrics[0];
+}
+
+function metricHtml(p){
+  const m = headlineMetric(p);
+  if(!m) return "";
+  return `
+    <div class="metric">
+      <span class="m-label">${m.label}${p.impact.basis !== "measured" ? `<span class="m-est">目安</span>` : ""}</span>
+      <div class="m-row">
+        <span class="before">${m.before}</span>
+        <span class="arrow">→</span>
+        <span class="after">${m.after}</span>
+      </div>
+    </div>`;
+}
+
 function render(){
   grid.innerHTML = "";
   const list = active === "すべて" ? PROJECTS : PROJECTS.filter(p => p.category === active);
-  for(const p of list){
+  arrange(list).forEach(({ p, span }, i) => {
     const card = document.createElement("article");
-    card.className = "card";
+    card.className = `card reveal span-${span} ${p.screenshot ? "card--shot" : "card--plain"}`;
+    card.style.setProperty("--delay", `${(i % 2) * 0.08}s`);
     const detailHref = `project.html?id=${encodeURIComponent(p.id)}`;
     card.innerHTML = `
       ${p.screenshot ? `
-      <a class="card-shot" href="${detailHref}" tabindex="-1">
+      <div class="card-shot">
         <img src="${p.screenshot.src}" alt="${p.screenshot.alt}" width="${p.screenshot.width}" height="${p.screenshot.height}" loading="lazy">
-      </a>` : ""}
-      <p class="card-cat">${p.category}</p>
-      <h2><a href="${detailHref}">${p.title}</a></h2>
-      <p class="desc">${p.desc}</p>
-      <ul class="features">${p.features.map(f => `<li>${f}</li>`).join("")}</ul>
-      ${p.impact ? `
-      <div class="impact">
-        <div class="impact-head">
-          <span class="impact-title">導入前後の比較</span>
-        </div>
-        ${p.impact.metrics.map(m => `
-          <div class="impact-metric">
-            <span class="m-label">${m.label}</span>
-            <div class="impact-row">
-              <span class="before">${m.before}</span>
-              <span class="arrow">→</span>
-              <span class="after">${m.after}</span>
-            </div>
-          </div>
-        `).join("")}
       </div>` : ""}
-      <div class="chips">${p.stack.map(s => `<span class="chip">${s}</span>`).join("")}</div>
-      <div class="card-footer">
-        <span class="path">📁 ${p.path}</span>
-        <span class="links">
+      <div class="card-body">
+        <p class="card-cat">${p.category}</p>
+        <h2><a href="${detailHref}">${p.title}</a></h2>
+        <p class="desc">${p.desc}</p>
+        ${metricHtml(p)}
+        <div class="chips">${p.stack.map(s => `<span class="chip">${s}</span>`).join("")}</div>
+        <div class="card-links">
           <a href="${detailHref}">詳細を見る →</a>
           ${p.demo ? `<a class="demo" href="${p.demo}" title="${p.demoNote || ''}">デモを開く →</a>` : ""}
-        </span>
+        </div>
       </div>
     `;
     grid.appendChild(card);
-  }
+    if(revealer){
+      revealer.observe(card);
+    }else{
+      card.classList.add("in");
+    }
+  });
 }
 
 function renderFilters(){
   filters.innerHTML = "";
   for(const c of CATEGORIES){
     const btn = document.createElement("button");
+    btn.type = "button";
     btn.textContent = c;
+    btn.setAttribute("aria-pressed", String(c === active));
     if(c === active) btn.classList.add("active");
     btn.addEventListener("click", () => {
       active = c;
@@ -105,6 +180,32 @@ function renderFilters(){
   }
 }
 
+function renderStats(){
+  const stats = [
+    ["プロジェクト", PROJECTS.length],
+    ["公開デモ", PROJECTS.filter(p => p.demo).length],
+    ["カテゴリ", CATEGORIES.length - 1]
+  ];
+  document.getElementById("stats").innerHTML = stats
+    .map(([label, value]) => `<div><dt>${label}</dt><dd>${value}</dd></div>`)
+    .join("");
+}
+
+// 横長の画像ほど奥に大きく置く
+function renderHeroMedia(){
+  const shots = PROJECTS
+    .filter(p => p.screenshot)
+    .sort((a, b) => b.screenshot.width / b.screenshot.height - a.screenshot.width / a.screenshot.height)
+    .slice(0, 3);
+  document.getElementById("heroMedia").innerHTML = shots.map((p, i) => `
+    <a class="hero-shot s${i}" href="project.html?id=${encodeURIComponent(p.id)}" aria-label="${p.title}の詳細を見る">
+      <img src="${p.screenshot.src}" alt="" width="${p.screenshot.width}" height="${p.screenshot.height}">
+    </a>
+  `).join("");
+}
+
+renderStats();
+renderHeroMedia();
 renderFilters();
 render();
 </script>

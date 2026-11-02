@@ -4,11 +4,16 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Project | Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@900&display=swap">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div class="wrap" id="app">
+<div class="glow" aria-hidden="true"></div>
+
+<div class="wrap detail-page" id="app">
   <!-- JSで描画されるまでの間の最小限のプレースホルダ -->
 </div>
 
@@ -36,21 +41,21 @@ function renderProject(p){
   const impactHtml = p.impact ? `
     <section class="detail-section">
       <h2>導入前後の比較</h2>
+      <div>
       <div class="detail-impact-grid">
         ${p.impact.metrics.map(m => `
-          <div class="impact">
-            <div class="impact-metric">
-              <span class="m-label">${m.label}</span>
-              <div class="impact-row">
-                <span class="before">${m.before}</span>
-                <span class="arrow">→</span>
-                <span class="after">${m.after}</span>
-              </div>
+          <div class="metric">
+            <span class="m-label">${m.label}${p.impact.basis !== "measured" ? `<span class="m-est">目安</span>` : ""}</span>
+            <div class="m-row">
+              <span class="before">${m.before}</span>
+              <span class="arrow">→</span>
+              <span class="after">${m.after}</span>
             </div>
           </div>
         `).join("")}
       </div>
       ${p.impact.basis !== "measured" ? `<p class="disclaimer">※ 実際の計測データではなく、機能から推測した目安です。</p>` : ""}
+      </div>
     </section>
   ` : "";
 
@@ -62,6 +67,10 @@ function renderProject(p){
       <h1>${p.title}</h1>
       <p class="desc">${p.desc}</p>
       <div class="chips">${p.stack.map(s => `<span class="chip">${s}</span>`).join("")}</div>
+      ${p.demo ? `
+      <div class="cta-row">
+        <a class="cta cta-primary" href="${p.demo}" title="${p.demoNote || ''}">デモを開く →</a>
+      </div>` : ""}
     </header>
 
     ${p.screenshot ? `
@@ -69,7 +78,7 @@ function renderProject(p){
       <h2>画面</h2>
       <figure class="detail-shot">
         <img src="${p.screenshot.src}" alt="${p.screenshot.alt}" width="${p.screenshot.width}" height="${p.screenshot.height}">
-        <figcaption>サンプルデータを入力し、実際にアプリを動かして撮影した画面です。</figcaption>
+        <figcaption>実際に動かして撮影した画面です。</figcaption>
       </figure>
     </section>` : ""}
 
@@ -95,7 +104,9 @@ function renderProject(p){
     <section class="detail-section">
       <h2>アクセス</h2>
       <div class="detail-footer-links">
-        <span class="path">📁 ${p.path}</span>
+        ${/^https?:/.test(p.path)
+          ? `<a class="path" href="${p.path}">📁 ${p.path}</a>`
+          : `<span class="path">📁 ${p.path}</span>`}
         ${p.demo ? `<a class="demo" href="${p.demo}" title="${p.demoNote || ''}">デモを開く →</a>` : ""}
       </div>
     </section>
