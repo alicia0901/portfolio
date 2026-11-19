@@ -20,6 +20,7 @@
   --white:#F4F1EC;
   --rule:rgba(244,241,236,.14);
   --fire:linear-gradient(100deg,var(--hi),var(--daidai));
+  --fire-btn:linear-gradient(100deg,#C22A12,#C9480A); /* 白文字を載せる面（コントラスト4.5以上） */
   --sans:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
   --num:"Bebas Neue","Oswald","Arial Narrow",sans-serif;
 }
@@ -53,7 +54,7 @@ h1,h2,h3{margin:0;font-weight:900;word-break:auto-phrase}
 .head-nav{display:flex;align-items:center;gap:24px;font-size:13.5px;font-weight:700}
 .head-nav a{text-decoration:none;color:var(--white)}
 .head-nav a:hover{color:var(--daidai)}
-.head-nav .cta{background:var(--fire);padding:9px 20px;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.head-nav .cta{background:var(--fire-btn);padding:9px 20px;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
 .head-nav .cta:hover{color:var(--white);filter:brightness(1.12)}
 @media (max-width:860px){.head-nav a:not(.cta){display:none}}
 
@@ -68,7 +69,7 @@ h1,h2,h3{margin:0;font-weight:900;word-break:auto-phrase}
 .hero h1{font-size:clamp(46px,8vw,112px);line-height:1.08;letter-spacing:-.01em}
 .hero h1 em{font-style:normal;background:var(--fire);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero .lead{margin:22px 0 32px;max-width:28em;color:#DCD6CE;font-size:16px}
-.btn{display:inline-flex;align-items:center;gap:12px;text-decoration:none;font-weight:900;padding:16px 34px;background:var(--fire);color:#fff;clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);transition:filter .2s}
+.btn{display:inline-flex;align-items:center;gap:12px;text-decoration:none;font-weight:900;padding:16px 34px;background:var(--fire-btn);color:#fff;clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);transition:filter .2s}
 .btn:hover{filter:brightness(1.15)}
 .btn::after{content:"";width:22px;height:2px;background:currentColor;box-shadow:6px 0 0 -0px currentColor}
 .btn.line{background:transparent;box-shadow:inset 0 0 0 2px var(--white);clip-path:none;margin-left:10px}
@@ -105,10 +106,12 @@ section{padding:clamp(80px,10vw,128px) 0}
 .row .s{font-size:13px;font-weight:700;text-align:right}
 .row .s b{font-family:var(--num);font-weight:400;font-size:24px;margin:0 2px}
 .row.few .s{color:var(--daidai)}
-.row.full .t,.row.full .s{color:#6D6761}
+.row.full .t,.row.full .s{color:#8E8882}
+.row:disabled{cursor:not-allowed;opacity:.5}
+.row:disabled:hover{background:transparent}
 .row.full .bar i{background:#4A4541}
 .row[aria-pressed="true"]{background:var(--white);color:var(--kuro)}
-.row[aria-pressed="true"] .s{color:var(--hi)}
+.row[aria-pressed="true"] .s{color:#B8260F}
 .row[aria-pressed="true"] .bar{background:#DDD6CD}
 @media (max-width:520px){.row{grid-template-columns:4em 1fr 6.4em;gap:10px;padding:12px 6px}.row .t{font-size:24px}}
 .panel{position:sticky;top:84px;background:var(--kuro-2);border:1px solid var(--rule);padding:28px 26px}
@@ -120,8 +123,10 @@ section{padding:clamp(80px,10vw,128px) 0}
 .picker .chosen{margin:0;font-size:17px;font-weight:900;padding-bottom:12px;border-bottom:1px solid var(--rule)}
 .picker .chosen small{display:block;font-size:12px;color:var(--daidai);font-weight:700}
 .picker label{display:grid;gap:4px;font-size:12px;color:var(--ash);font-weight:700}
+.picker .rule{color:var(--daidai);font-weight:500}
+.picker .rule[hidden]{display:none}
 .picker select{font-size:15px;background:var(--kuro);border:1px solid var(--rule);padding:12px;color:var(--white)}
-.go{border:0;background:var(--fire);color:#fff;font-weight:900;font-size:16px;padding:16px;cursor:pointer;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+.go{border:0;background:var(--fire-btn);color:#fff;font-weight:900;font-size:16px;padding:16px;cursor:pointer;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%)}
 .go:hover{filter:brightness(1.15)}
 .go.wait{background:var(--white);color:var(--kuro)}
 .panel .foot{margin:18px 0 0;font-size:12.5px;color:var(--ash)}
@@ -167,7 +172,7 @@ section{padding:clamp(80px,10vw,128px) 0}
 .course{background:var(--kuro-2);border:1px solid var(--rule);display:grid;grid-template-rows:auto 1fr}
 .course .ph{aspect-ratio:16/9}
 .course .body{padding:26px 28px 30px;position:relative}
-.course .tag{position:absolute;right:20px;top:-18px;background:var(--fire);font-size:12px;font-weight:900;padding:6px 14px;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+.course .tag{position:absolute;right:20px;top:-18px;background:var(--fire-btn);font-size:12px;font-weight:900;padding:6px 14px;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
 .course h3{font-size:24px}
 .course .meta{margin:0 0 8px;color:var(--ash);font-size:13px}
 .course .price{margin:0 0 16px;font-family:var(--num);font-size:56px;line-height:1}
@@ -210,7 +215,7 @@ section{padding:clamp(80px,10vw,128px) 0}
 .info dd{margin:0}
 .map{min-height:300px;background:var(--kuro-2);border:1px solid var(--rule);position:relative;overflow:hidden}
 .map::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 44%,#2E2A27 44% 47%,transparent 47%),linear-gradient(0deg,transparent 60%,#2E2A27 60% 63%,transparent 63%)}
-.map b{position:absolute;left:52%;top:36%;font-size:13px;font-weight:900;background:var(--fire);padding:3px 14px}
+.map b{position:absolute;left:52%;top:36%;font-size:13px;font-weight:900;background:var(--fire-btn);padding:3px 14px}
 .map i{position:absolute;left:10%;bottom:22%;font-style:normal;font-size:12px;border:1px solid var(--rule);padding:2px 10px;background:var(--kuro)}
 .map span{position:absolute;right:12px;bottom:8px;font-size:11px;color:var(--ash)}
 @media (max-width:860px){.access{grid-template-columns:1fr}}
@@ -230,7 +235,7 @@ dialog::backdrop{background:rgba(0,0,0,.75)}
 .dlg p{margin:0 0 20px;font-size:13px;color:var(--ash)}
 .dlg .btns{display:flex;flex-wrap:wrap;gap:10px}
 .dlg .btns a,.dlg .btns button{flex:1;min-width:150px;text-align:center;padding:13px;font-size:14px;font-weight:900;cursor:pointer;text-decoration:none;border:0}
-.dlg .btns a{background:var(--fire);color:#fff}
+.dlg .btns a{background:var(--fire-btn);color:#fff}
 .dlg .btns button{background:transparent;color:var(--white);box-shadow:inset 0 0 0 1px var(--white)}
 </style>
 </head>
@@ -283,10 +288,10 @@ dialog::backdrop{background:rgba(0,0,0,.75)}
             <p class="chosen" aria-live="polite"></p>
             <label>人数<select id="rsvPeople"></select></label>
             <label>コース<select id="rsvCourse">
-              <option value="上カルビコース 全8品（5,980円）">上カルビコース 5,980円</option>
-              <option value="特選和牛コース 全10品（8,980円）">特選和牛コース 8,980円</option>
-              <option value="お席のみ（2時間）">お席のみ</option>
-            </select></label>
+              <option data-min="120" value="上カルビコース 全8品（5,980円）">上カルビコース 5,980円</option>
+              <option data-min="150" value="特選和牛コース 全10品（8,980円）">特選和牛コース 8,980円</option>
+              <option data-min="120" value="お席のみ（2時間）">お席のみ</option>
+            </select><span class="rule" hidden></span></label>
             <button class="go" id="go" type="button">ご予約に進む</button>
           </div>
           <p class="foot">13名さま以上・貸切は、お電話でご相談ください。ランチは土日祝のみの営業です。</p>
@@ -496,8 +501,9 @@ const TOTAL = 48;
 const CLOSED = [2]; // 火曜定休
 const DINNER = ["17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00"];
 const DINNER_PEAK = [3,5,8,10,11,10,8,5,3];
-const LUNCH = ["11:30","12:00","12:30","13:00"];
-const LUNCH_PEAK = [5,8,8,4];
+const LUNCH = ["11:30","12:00","12:30"];   // ご滞在2時間で14:30閉店に収まる時間まで
+const LUNCH_PEAK = [5,8,8];
+const CLOSE = { lunch: "14:30", dinner: "23:00" };
 const WD = ["日","月","火","水","木","金","土"];
 const tabsEl = document.querySelector(".tabs");
 const rowsEl = document.querySelector(".rows");
@@ -513,12 +519,19 @@ for (let n = 1; n <= 12; n++) people.add(new Option(`${n}名`, String(n), false,
 const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 const label = (d) => `${d.getMonth()+1}月${d.getDate()}日（${WD[d.getDay()]}）`;
 const isWeekend = (d) => d.getDay() === 0 || d.getDay() === 6;
+const nowMin = () => { const n = new Date(); return n.getHours()*60 + n.getMinutes(); };
+const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h*60 + m; };
+const isToday = (d) => ymd(d) === ymd(new Date());
+const isPast = (d, t) => isToday(d) && toMin(t) <= nowMin();
+const focusEl = (sel) => { const el = document.querySelector(sel); if (el) el.focus({ preventScroll: true }); };
 function openDays(count){
   const out = [];
   const t = new Date(); t.setHours(12,0,0,0);
   for (let i = 0; out.length < count && i < 30; i++){
     const d = new Date(t); d.setDate(t.getDate() + i);
-    if (!CLOSED.includes(d.getDay())) out.push(d);
+    if (CLOSED.includes(d.getDay())) continue;
+    if (i === 0 && toMin(DINNER[DINNER.length-1]) <= nowMin()) continue; // 今日の受付が終わっていれば翌日から
+    out.push(d);
   }
   return out;
 }
@@ -541,7 +554,7 @@ function renderTabs(){
     b.setAttribute("aria-pressed", String(i === state.day));
     b.innerHTML = `<span class="num">${d.getMonth()+1}/${d.getDate()}</span><small>${ymd(d) === today ? "今日" : WD[d.getDay()] + "曜"}</small>`;
     b.setAttribute("aria-label", label(d));
-    b.addEventListener("click", () => { state = { day: i, time: null, left: 0 }; closePicker(); renderTabs(); renderRows(); });
+    b.addEventListener("click", () => { state = { day: i, time: null, left: 0 }; closePicker(); renderTabs(); renderRows(); focusEl(`.tabs [data-day="${ymd(d)}"]`); });
     tabsEl.appendChild(b);
   });
 }
@@ -550,10 +563,16 @@ function addGroup(name, times, peaks, d){
   head.className = "label"; head.textContent = name; head.setAttribute("aria-hidden", "true");
   rowsEl.appendChild(head);
   times.forEach((t, idx) => {
-    const left = seatsLeft(d, peaks[idx], idx);
     const li = document.createElement("li");
     const b = document.createElement("button");
     b.type = "button";
+    if (isPast(d, t)){
+      b.className = "row"; b.disabled = true;
+      b.setAttribute("aria-label", `${t} 受付終了`);
+      b.innerHTML = `<span class="t">${t}</span><span class="bar" aria-hidden="true"></span><span class="s">受付終了</span>`;
+      li.appendChild(b); rowsEl.appendChild(li); return;
+    }
+    const left = seatsLeft(d, peaks[idx], idx);
     b.className = "row" + (left === 0 ? " full" : left <= 8 ? " few" : "");
     b.dataset.slot = "";
     b.dataset.date = ymd(d);
@@ -564,7 +583,7 @@ function addGroup(name, times, peaks, d){
     b.setAttribute("aria-label", `${t} ${text}`);
     const fill = Math.round((TOTAL - left) / TOTAL * 100);
     b.innerHTML = `<span class="t">${t}</span><span class="bar" aria-hidden="true"><i style="width:${fill}%"></i></span><span class="s">${left === 0 ? "満席" : `残り<b>${left}</b>席`}</span>`;
-    b.addEventListener("click", () => { state.time = t; state.left = left; renderRows(); openPicker(); });
+    b.addEventListener("click", () => { state.time = t; state.left = left; renderRows(); openPicker(); focusEl(`.row[data-date="${ymd(d)}"][data-time="${t}"]`); });
     li.appendChild(b); rowsEl.appendChild(li);
   });
 }
@@ -580,8 +599,21 @@ function updateGo(){
   go.textContent = wait ? "キャンセル待ちに登録" : "ご予約に進む";
   go.classList.toggle("wait", wait);
 }
+const course = document.getElementById("rsvCourse");
+const rule = document.querySelector(".picker .rule");
+function applyRules(){
+  // 閉店時刻までに終わらないコースは選べない
+  const start = toMin(state.time);
+  const close = toMin(start < toMin("15:00") ? CLOSE.lunch : CLOSE.dinner);
+  const off = [];
+  [...course.options].forEach((o) => { o.disabled = start + Number(o.dataset.min) > close; if (o.disabled) off.push(o.textContent.replace(/ [\d,]+円$/, "")); });
+  if (course.selectedOptions[0].disabled) course.value = [...course.options].find((o) => !o.disabled).value;
+  rule.hidden = off.length === 0;
+  rule.textContent = off.length ? `${state.time}からは閉店時刻の都合で「${off.join("」「")}」は承れません` : "";
+}
 function openPicker(){
   picker.hidden = false; hint.hidden = true;
+  applyRules();
   chosen.innerHTML = "";
   chosen.append(
     Object.assign(document.createElement("small"), { textContent: state.left === 0 ? "満席" : `残り${state.left}席` }),

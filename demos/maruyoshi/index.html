@@ -125,8 +125,10 @@ section{padding:clamp(72px,10vw,120px) 0}
 .slot .m{display:block;font-family:var(--hand);font-size:30px;line-height:1.2;color:var(--aka)}
 .slot .s{display:block;font-size:11px;color:var(--sumi-soft)}
 .slot.full{background:#EDE7DA}
-.slot.full .m{color:#8F877C;font-family:var(--body);font-weight:700;font-size:26px}
+.slot.full .m{color:#6E665C;font-family:var(--body);font-weight:700;font-size:26px}
 .slot[aria-pressed="true"]{border-color:var(--sumi);background:var(--ki);box-shadow:3px 3px 0 var(--sumi)}
+.slot:disabled{cursor:not-allowed;background:transparent;border-style:dashed;opacity:.55}
+.slot:disabled .m{color:var(--sumi-soft);font-family:var(--body);font-size:20px;line-height:1.8}
 .slot[aria-pressed="true"] .m{color:var(--sumi)}
 @media (max-width:900px){.slots{grid-template-columns:repeat(5,1fr)}}
 @media (max-width:520px){.slots{grid-template-columns:repeat(3,1fr)}}
@@ -134,6 +136,8 @@ section{padding:clamp(72px,10vw,120px) 0}
 .picker[hidden]{display:none}
 .picker .chosen{margin:0;font-weight:700;font-size:17px}
 .picker label{display:grid;gap:4px;font-size:12px;font-weight:700}
+.picker .rule{font-weight:400;color:var(--aka-dark)}
+.picker .rule[hidden]{display:none}
 .picker select{font-size:15px;background:#fff;border:2px solid var(--sumi);border-radius:8px;padding:10px 12px;max-width:100%}
 .go{border:3px solid var(--sumi);background:var(--aka);color:#fff;font-weight:700;padding:12px 26px;border-radius:999px;cursor:pointer;box-shadow:4px 4px 0 var(--sumi)}
 .go:hover{background:var(--aka-dark)}
@@ -149,7 +153,7 @@ section{padding:clamp(72px,10vw,120px) 0}
 .course h3{font-family:var(--display);font-size:22px}
 .course.best{box-shadow:8px 8px 0 var(--aka)}
 .course.best header{background:var(--aka);color:#fff}
-.course.best header small{color:#FFE48A}
+.course.best header small{color:#FFF1B8}
 .course .body{padding:18px 20px 22px;display:flex;flex-direction:column;flex:1}
 .course .price{font-family:var(--display);font-size:38px;line-height:1.1;color:var(--aka);margin:0}
 .course .price small{font-family:var(--body);font-size:12px;color:var(--sumi-soft);margin-left:4px}
@@ -174,8 +178,8 @@ section{padding:clamp(72px,10vw,120px) 0}
 .tanzaku span{font-size:18px;color:var(--aka)}
 .tcy{font-style:normal;text-combine-upright:all}
 .tanzaku.osusume{background:var(--aka);color:#fff;width:84px;font-size:19px}
-.tanzaku.osusume span{color:var(--ki)}
-.tanzaku.osusume small{font-size:14px;color:var(--ki);text-orientation:upright}
+.tanzaku.osusume span{color:#FFF1B8}
+.tanzaku.osusume small{font-size:14px;color:#FFF1B8;text-orientation:upright}
 @media (max-width:520px){.tanzaku{width:54px;min-height:210px;font-size:18px}}
 .wall-photos{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
 .wall-photos .ph{aspect-ratio:3/2;border:8px solid var(--kinari)}
@@ -279,11 +283,11 @@ dialog::backdrop{background:rgba(30,26,23,.6)}
           <p class="chosen" aria-live="polite"></p>
           <label>人数<select id="rsvPeople"></select></label>
           <label>コース<select id="rsvCourse">
-            <option value="まんぞく宴会 飲み放題2時間（3,500円）">まんぞく宴会 3,500円</option>
-            <option value="よくばり宴会 飲み放題2時間（4,500円）">よくばり宴会 4,500円</option>
-            <option value="まるよし大宴会 飲み放題2.5時間（5,500円）">まるよし大宴会 5,500円</option>
+            <option data-advance value="まんぞく宴会 飲み放題2時間（3,500円）">まんぞく宴会 3,500円</option>
+            <option data-advance value="よくばり宴会 飲み放題2時間（4,500円）">よくばり宴会 4,500円</option>
+            <option data-advance value="まるよし大宴会 飲み放題2.5時間（5,500円）">まるよし大宴会 5,500円</option>
             <option value="お席のみ（2時間）">お席のみ</option>
-          </select></label>
+          </select><span class="rule" hidden>本日は「お席のみ」のご予約です（宴会コースは前日まで）</span></label>
           <button class="go" id="go" type="button">ご予約に進む</button>
         </div>
         <p class="board-foot">21名さま以上・貸切のご相談は、お電話で承ります。宴会コースは前日までのご予約でお願いします。</p>
@@ -468,7 +472,9 @@ function openDays(count){
   const t = new Date(); t.setHours(12,0,0,0);
   for (let i = 0; out.length < count && i < 30; i++){
     const d = new Date(t); d.setDate(t.getDate() + i);
-    if (!CLOSED.includes(d.getDay())) out.push(d);
+    if (CLOSED.includes(d.getDay())) continue;
+    if (i === 0 && toMin(TIMES[TIMES.length-1]) <= nowMin()) continue; // 今日の受付が終わっていれば翌日から
+    out.push(d);
   }
   return out;
 }
@@ -477,6 +483,11 @@ function seatsLeft(d, idx){
   const weekend = d.getDay() === 5 || d.getDay() === 6 ? 8 : 0;
   return Math.max(0, TOTAL - Math.min(TOTAL, PEAK[idx]*4 + weekend + (seed % 13)));
 }
+const nowMin = () => { const n = new Date(); return n.getHours()*60 + n.getMinutes(); };
+const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h*60 + m; };
+const isToday = (d) => ymd(d) === ymd(new Date());
+const isPast = (d, t) => isToday(d) && toMin(t) <= nowMin();
+const focusEl = (sel) => { const el = document.querySelector(sel); if (el) el.focus({ preventScroll: true }); };
 const mark = (left) => left === 0 ? ["×","満席"] : left <= 5 ? ["△",`残り${left}席`] : left <= 15 ? ["○","空きあり"] : ["◎","余裕あり"];
 
 const DAYS = openDays(7);
@@ -492,7 +503,7 @@ function renderDays(){
     if (d.getDay() === 6) b.className = "sat";
     b.setAttribute("aria-pressed", String(i === state.day));
     b.innerHTML = `${ymd(d) === today ? "今日" : `${d.getMonth()+1}/${d.getDate()}`}<small>${label(d)}</small>`;
-    b.addEventListener("click", () => { state = { day: i, time: null, left: 0 }; picker.hidden = true; renderDays(); renderSlots(); });
+    b.addEventListener("click", () => { state = { day: i, time: null, left: 0 }; picker.hidden = true; renderDays(); renderSlots(); focusEl(`.days [data-day="${ymd(d)}"]`); });
     daysEl.appendChild(b);
   });
 }
@@ -500,11 +511,17 @@ function renderSlots(){
   const d = DAYS[state.day];
   slotsEl.replaceChildren();
   TIMES.forEach((t, idx) => {
-    const left = seatsLeft(d, idx);
-    const [m, s] = mark(left);
     const li = document.createElement("li");
     const b = document.createElement("button");
     b.type = "button";
+    if (isPast(d, t)){
+      b.className = "slot"; b.disabled = true;
+      b.setAttribute("aria-label", `${t} 受付終了`);
+      b.innerHTML = `<span class="t">${t}</span><span class="m" aria-hidden="true">−</span><span class="s">受付終了</span>`;
+      li.appendChild(b); slotsEl.appendChild(li); return;
+    }
+    const left = seatsLeft(d, idx);
+    const [m, s] = mark(left);
     b.className = "slot" + (left === 0 ? " full" : "");
     b.dataset.slot = "";
     b.dataset.date = ymd(d);
@@ -513,7 +530,7 @@ function renderSlots(){
     b.setAttribute("aria-pressed", String(state.time === t));
     b.setAttribute("aria-label", `${t} ${s}`);
     b.innerHTML = `<span class="t">${t}</span><span class="m" aria-hidden="true">${m}</span><span class="s">${s}</span>`;
-    b.addEventListener("click", () => { state.time = t; state.left = left; renderSlots(); showPicker(); });
+    b.addEventListener("click", () => { state.time = t; state.left = left; renderSlots(); showPicker(); focusEl(`.slot[data-date="${ymd(d)}"][data-time="${t}"]`); });
     li.appendChild(b); slotsEl.appendChild(li);
   });
 }
@@ -523,8 +540,17 @@ function updateGo(){
   go.textContent = wait ? "キャンセル待ちに登録" : "ご予約に進む";
   go.classList.toggle("wait", wait);
 }
+const course = document.getElementById("rsvCourse");
+const rule = document.querySelector(".picker .rule");
+function applyRules(){
+  const today = isToday(DAYS[state.day]);
+  [...course.options].forEach((o) => { o.disabled = today && o.dataset.advance !== undefined; });
+  if (course.selectedOptions[0].disabled) course.value = [...course.options].find((o) => !o.disabled).value;
+  rule.hidden = !today;
+}
 function showPicker(){
   picker.hidden = false;
+  applyRules();
   const full = state.left === 0;
   chosen.textContent = `${label(DAYS[state.day])} ${state.time}〜` + (full ? "　満席" : `　残り${state.left}席`);
   updateGo();

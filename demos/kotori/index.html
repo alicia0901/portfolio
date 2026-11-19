@@ -15,11 +15,11 @@
   --kinari:#FAF6EF;     /* 生成り */
   --cream:#F3ECDF;
   --mint:#A9D6C6;
-  --mint-deep:#4F8F7B;
+  --mint-deep:#3B7362;
   --pink:#EBC3BF;
-  --pink-deep:#B9706A;
+  --pink-deep:#A3524C;
   --ink:#4B4541;        /* 本文 */
-  --ink-soft:#8A817A;
+  --ink-soft:#6B635D;
   --line:#E8DFD2;
   --round:"Zen Maru Gothic","Hiragino Maru Gothic ProN","Rounded Mplus 1c","Noto Sans JP",sans-serif;
 }
@@ -130,7 +130,8 @@ section{padding:clamp(80px,11vw,128px) 0}
 .dots{display:grid;gap:3px}
 .dotbtn{display:flex;align-items:center;justify-content:center;gap:5px;min-height:32px;border:0;border-radius:10px;background:var(--white);cursor:pointer;font-size:11.5px;line-height:1;padding:0 2px}
 .dotbtn i{flex:none;width:10px;height:10px;border-radius:50%}
-.dotbtn.full{color:#B3AAA0}
+.dotbtn.full{color:var(--ink-soft)}
+.dotbtn:disabled,.bigslot:disabled{cursor:not-allowed;background:transparent;box-shadow:inset 0 0 0 1px var(--line);opacity:.6}
 .dotbtn[aria-pressed="true"]{background:var(--mint-deep);color:#fff}
 .dotbtn[aria-pressed="true"] i{box-shadow:0 0 0 2px #fff}
 @media (max-width:560px){
@@ -150,14 +151,16 @@ section{padding:clamp(80px,11vw,128px) 0}
 .bigslot .s i{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}
 .bigslot.few .s{color:var(--pink-deep)}
 .bigslot.full{background:#F6F2EC}
-.bigslot.full .t{color:#B3AAA0}
+.bigslot.full .t{color:var(--ink-soft)}
 .bigslot:hover{border-color:var(--mint-deep)}
 .bigslot[aria-pressed="true"]{background:var(--mint-deep);border-color:var(--mint-deep);color:#fff}
-.bigslot[aria-pressed="true"] .s{color:#fff}
+.bigslot[aria-pressed="true"] .s,.bigslot[aria-pressed="true"] .t{color:#fff}
 .picker{display:grid;grid-template-columns:1fr auto auto auto;gap:14px;align-items:end;margin-top:20px}
 .picker[hidden]{display:none}
 .picker .chosen{margin:0;font-weight:700}
 .picker label{display:grid;gap:4px;font-size:12px;color:var(--ink-soft)}
+.picker .rule{color:var(--pink-deep)}
+.picker .rule[hidden]{display:none}
 .picker select{font-size:14.5px;background:var(--kinari);border:1.5px solid var(--line);border-radius:14px;padding:10px 12px;max-width:100%;color:var(--ink)}
 .go{border:0;background:var(--pink-deep);color:#fff;font-weight:700;padding:13px 28px;border-radius:999px;cursor:pointer}
 .go:hover{background:var(--ink)}
@@ -296,7 +299,7 @@ dialog::backdrop{background:rgba(75,69,65,.35)}
           <div class="picker" hidden>
             <p class="chosen" aria-live="polite"></p>
             <label>人数<select id="rsvPeople"><option value="1">1名</option><option value="2" selected>2名</option><option value="3">3名</option><option value="4">4名</option></select></label>
-            <label>プラン<select id="rsvCourse"><option value="季節のアフタヌーンティー（3,800円）">季節のアフタヌーンティー 3,800円</option><option value="ケーキセットのお席予約（1,200円〜）">ケーキセットのお席予約 1,200円〜</option></select></label>
+            <label>プラン<select id="rsvCourse"><option data-advance value="季節のアフタヌーンティー（3,800円）">季節のアフタヌーンティー 3,800円</option><option value="ケーキセットのお席予約（1,200円〜）">ケーキセットのお席予約 1,200円〜</option></select><span class="rule" hidden>本日はお席のみのご予約です（アフタヌーンティーは前日まで）</span></label>
             <button class="go" id="go" type="button">ご予約に進む</button>
           </div>
         </div>
@@ -436,19 +439,31 @@ const label = (d) => `${d.getMonth()+1}月${d.getDate()}日（${WD[d.getDay()]}�
 const start = new Date(); start.setHours(12,0,0,0);
 const DAYS = Array.from({ length: 14 }, (_, i) => { const d = new Date(start); d.setDate(start.getDate() + i); return d; });
 const isClosed = (d) => CLOSED.includes(d.getDay());
+const nowMin = () => { const n = new Date(); return n.getHours()*60 + n.getMinutes(); };
+const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h*60 + m; };
+const isToday = (d) => ymd(d) === ymd(new Date());
+const isPast = (d, t) => isToday(d) && toMin(t) <= nowMin();
+const hasOpen = (d) => !isClosed(d) && TIMES.some((t) => !isPast(d, t));
+const focusEl = (sel) => { const el = document.querySelector(sel); if (el) el.focus({ preventScroll: true }); };
 function seatsLeft(d, idx){
   const seed = d.getDate()*29 + d.getMonth()*7 + idx*11;
   const weekend = d.getDay() === 0 || d.getDay() === 6 ? 4 : 0;
   return Math.max(0, TOTAL - Math.min(TOTAL, BASE[idx] + weekend + (seed % 9)));
 }
 const status = (left) => left === 0 ? ["full","満席"] : left <= 4 ? ["few",`残り${left}席`] : ["ok","空きあり"];
-const dotClass = { ok: "dot-ok", few: "dot-few", full: "dot-full" };
+const dotClass = { ok: "dot-ok", few: "dot-few", full: "dot-full", past: "dot-full" };
 
-let state = { day: DAYS.findIndex((d) => !isClosed(d)), time: null, left: 0 };
+let state = { day: DAYS.findIndex(hasOpen), time: null, left: 0 };
 const last = DAYS[DAYS.length - 1];
 document.querySelector(".range").textContent = `${label(DAYS[0])} 〜 ${label(last)}`;
 
 function slotButton(d, t, idx, cls){
+  if (isPast(d, t)){
+    const b = document.createElement("button");
+    b.type = "button"; b.className = `${cls} past`; b.disabled = true;
+    b.setAttribute("aria-label", `${label(d)} ${t} 受付終了`);
+    return [b, "past", "受付終了"];
+  }
   const left = seatsLeft(d, idx);
   const [st, text] = status(left);
   const b = document.createElement("button");
@@ -461,7 +476,7 @@ function slotButton(d, t, idx, cls){
   const sel = state.day === DAYS.indexOf(d) && state.time === t;
   b.setAttribute("aria-pressed", String(sel));
   b.setAttribute("aria-label", `${label(d)} ${t} ${text}`);
-  b.addEventListener("click", () => { state = { day: DAYS.indexOf(d), time: t, left }; render(); showPicker(); });
+  b.addEventListener("click", () => { state = { day: DAYS.indexOf(d), time: t, left }; render(); showPicker(); focusEl(`.${cls}[data-date="${ymd(d)}"][data-time="${t}"]`); });
   return [b, st, text];
 }
 
@@ -491,7 +506,7 @@ function render(){
       head.type = "button";
       head.setAttribute("aria-pressed", String(i === state.day));
       head.setAttribute("aria-label", `${label(d)}を選ぶ`);
-      head.addEventListener("click", () => { state = { day: i, time: null, left: 0 }; picker.hidden = true; render(); });
+      head.addEventListener("click", () => { state = { day: i, time: null, left: 0 }; picker.hidden = true; render(); focusEl(`.date[data-day="${ymd(d)}"]`); });
       const dots = document.createElement("div"); dots.className = "dots";
       TIMES.forEach((t, idx) => {
         const [b, st] = slotButton(d, t, idx, "dotbtn");
@@ -517,8 +532,17 @@ function updateGo(){
   go.textContent = wait ? "キャンセル待ちに登録" : "ご予約に進む";
   go.classList.toggle("wait", wait);
 }
+const course = document.getElementById("rsvCourse");
+const rule = document.querySelector(".picker .rule");
+function applyRules(){
+  const today = isToday(DAYS[state.day]);
+  [...course.options].forEach((o) => { o.disabled = today && o.dataset.advance !== undefined; });
+  if (course.selectedOptions[0].disabled) course.value = [...course.options].find((o) => !o.disabled).value;
+  rule.hidden = !today;
+}
 function showPicker(){
   picker.hidden = false;
+  applyRules();
   chosen.textContent = `${label(DAYS[state.day])} ${state.time}〜` + (state.left === 0 ? "　満席" : `　残り${state.left}席`);
   updateGo();
 }
