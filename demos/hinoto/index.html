@@ -1,0 +1,618 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>炭火焼肉 ひのと｜黒毛和牛一頭買いの焼肉店（制作デモ）</title>
+<meta name="description" content="黒毛和牛を一頭買いする炭火焼肉店。部位ごとのおすすめと、コース・空席をその場で確認して予約できます。※制作実績用の架空店舗デモサイトです。">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Zen+Kaku+Gothic+New:wght@500;700;900&display=swap" rel="stylesheet">
+<style>
+:root{
+  --kuro:#0E0D0C;       /* 黒 */
+  --kuro-2:#181614;
+  --kuro-3:#24211E;
+  --hi:#E2361B;         /* 炎の赤 */
+  --daidai:#FF7A1A;     /* 炎のオレンジ */
+  --ash:#9D968F;
+  --white:#F4F1EC;
+  --rule:rgba(244,241,236,.14);
+  --fire:linear-gradient(100deg,var(--hi),var(--daidai));
+  --sans:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Noto Sans JP",sans-serif;
+  --num:"Bebas Neue","Oswald","Arial Narrow",sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;background:var(--kuro);color:var(--white);font-family:var(--sans);font-weight:500;font-size:15px;line-height:1.9;-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+a{color:inherit}
+button,select{font:inherit;color:inherit}
+h1,h2,h3{margin:0;font-weight:900;word-break:auto-phrase}
+:focus-visible{outline:2px solid var(--daidai);outline-offset:3px}
+.wrap{width:min(1180px,100% - 40px);margin-inline:auto}
+.demo-bar{background:#000;color:var(--ash);font-size:11.5px;line-height:1.6;padding:7px 16px;text-align:center}
+.demo-bar a{color:var(--white)}
+.num{font-family:var(--num);font-weight:400;letter-spacing:.02em}
+
+/* 写真枠（画像が無いあいだはラベル付きの面を出す） */
+.ph{position:relative;margin:0;overflow:hidden;background:repeating-linear-gradient(-45deg,var(--kuro-2) 0 16px,#1F1C1A 16px 32px)}
+.ph img{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover}
+.ph.is-empty img{display:none}
+.ph::after{content:"写真：" attr(data-label) "（イメージ）";position:absolute;inset:0;display:grid;place-items:center;padding:16px;text-align:center;font-size:13px;color:var(--ash);line-height:1.6}
+
+/* header */
+.site-head{position:sticky;top:0;z-index:20;background:rgba(14,13,12,.9);backdrop-filter:blur(8px);border-bottom:1px solid var(--rule)}
+.site-head .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo svg{width:28px;height:34px}
+.logo b{font-weight:900;font-size:20px;letter-spacing:.12em}
+.logo small{display:block;font-family:var(--num);font-size:13px;letter-spacing:.3em;color:var(--daidai);line-height:1}
+.head-nav{display:flex;align-items:center;gap:24px;font-size:13.5px;font-weight:700}
+.head-nav a{text-decoration:none;color:var(--white)}
+.head-nav a:hover{color:var(--daidai)}
+.head-nav .cta{background:var(--fire);padding:9px 20px;clip-path:polygon(8px 0,100% 0,calc(100% - 8px) 100%,0 100%)}
+.head-nav .cta:hover{color:var(--white);filter:brightness(1.12)}
+@media (max-width:860px){.head-nav a:not(.cta){display:none}}
+
+/* hero */
+.hero{position:relative;min-height:min(92svh,820px);display:grid;align-items:end;clip-path:polygon(0 0,100% 0,100% 88%,0 100%);overflow:hidden}
+.hero > .ph{position:absolute;inset:0}
+.hero > .ph img{object-position:50% 60%}
+.hero::before{content:"";position:absolute;inset:0;z-index:2;background:linear-gradient(0deg,rgba(14,13,12,.95) 0%,rgba(14,13,12,.55) 45%,rgba(14,13,12,.15) 100%),linear-gradient(90deg,rgba(14,13,12,.7),rgba(14,13,12,0) 60%);pointer-events:none}
+.hero .wrap{position:relative;z-index:3;padding:120px 0 150px}
+.hero .kicker{display:inline-flex;gap:10px;align-items:center;font-family:var(--num);font-size:20px;letter-spacing:.24em;color:var(--daidai);margin:0 0 10px}
+.hero .kicker::before{content:"";width:40px;height:2px;background:var(--fire)}
+.hero h1{font-size:clamp(46px,8vw,112px);line-height:1.08;letter-spacing:-.01em}
+.hero h1 em{font-style:normal;background:var(--fire);-webkit-background-clip:text;background-clip:text;color:transparent}
+.hero .lead{margin:22px 0 32px;max-width:28em;color:#DCD6CE;font-size:16px}
+.btn{display:inline-flex;align-items:center;gap:12px;text-decoration:none;font-weight:900;padding:16px 34px;background:var(--fire);color:#fff;clip-path:polygon(12px 0,100% 0,calc(100% - 12px) 100%,0 100%);transition:filter .2s}
+.btn:hover{filter:brightness(1.15)}
+.btn::after{content:"";width:22px;height:2px;background:currentColor;box-shadow:6px 0 0 -0px currentColor}
+.btn.line{background:transparent;box-shadow:inset 0 0 0 2px var(--white);clip-path:none;margin-left:10px}
+@media (max-width:640px){.btn.line{margin:12px 0 0}}
+.stats{display:flex;flex-wrap:wrap;gap:12px 40px;margin:44px 0 0;padding:0;list-style:none}
+.stats li{line-height:1.2}
+.stats b{display:block;font-family:var(--num);font-weight:400;font-size:44px;line-height:1;background:var(--fire);-webkit-background-clip:text;background-clip:text;color:transparent}
+.stats span{font-size:12px;color:var(--ash);letter-spacing:.1em}
+
+/* section heading */
+section{padding:clamp(80px,10vw,128px) 0}
+.head{display:flex;flex-wrap:wrap;align-items:flex-end;gap:4px 22px;margin-bottom:40px}
+.head .en{font-family:var(--num);font-size:clamp(52px,8vw,96px);line-height:.85;color:transparent;-webkit-text-stroke:1px rgba(244,241,236,.35)}
+.head h2{font-size:clamp(24px,3vw,34px);line-height:1.3}
+.head h2::after{content:"";display:block;width:56px;height:4px;background:var(--fire);margin-top:10px;transform:skewX(-20deg)}
+.lead-text{margin:0 0 32px;max-width:36em;color:#CFC8BF}
+
+/* 空席 */
+.res{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:28px;align-items:start}
+.tabs{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:10px;scroll-snap-type:x mandatory}
+.tabs button{flex:1 0 84px;scroll-snap-align:start;background:var(--kuro-2);border:1px solid var(--rule);padding:8px 4px;cursor:pointer;line-height:1.2;text-align:center}
+.tabs button .num{display:block;font-size:26px}
+.tabs button small{font-size:11px;color:var(--ash)}
+.tabs button.weekend small{color:var(--daidai)}
+.tabs button[aria-pressed="true"]{background:var(--white);color:var(--kuro);border-color:var(--white)}
+.tabs button[aria-pressed="true"] small{color:#5D5650}
+.rows{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+.rows .label{font-family:var(--num);font-size:16px;letter-spacing:.24em;color:var(--daidai);padding:14px 0 4px}
+.row{width:100%;display:grid;grid-template-columns:5.2em 1fr 7.5em;gap:16px;align-items:center;background:transparent;border:0;border-bottom:1px solid var(--rule);padding:12px 10px;cursor:pointer;text-align:left}
+.row:hover{background:rgba(244,241,236,.04)}
+.row .t{font-family:var(--num);font-size:28px;line-height:1}
+.bar{height:8px;background:var(--kuro-3);position:relative;overflow:hidden;transform:skewX(-20deg)}
+.bar i{position:absolute;left:0;top:0;bottom:0;background:var(--fire)}
+.row .s{font-size:13px;font-weight:700;text-align:right}
+.row .s b{font-family:var(--num);font-weight:400;font-size:24px;margin:0 2px}
+.row.few .s{color:var(--daidai)}
+.row.full .t,.row.full .s{color:#6D6761}
+.row.full .bar i{background:#4A4541}
+.row[aria-pressed="true"]{background:var(--white);color:var(--kuro)}
+.row[aria-pressed="true"] .s{color:var(--hi)}
+.row[aria-pressed="true"] .bar{background:#DDD6CD}
+@media (max-width:520px){.row{grid-template-columns:4em 1fr 6.4em;gap:10px;padding:12px 6px}.row .t{font-size:24px}}
+.panel{position:sticky;top:84px;background:var(--kuro-2);border:1px solid var(--rule);padding:28px 26px}
+.panel h3{font-size:18px;margin-bottom:6px}
+.panel .hint{margin:0;color:var(--ash);font-size:14px}
+.panel .hint[hidden]{display:none}
+.picker{display:grid;gap:14px}
+.picker[hidden]{display:none}
+.picker .chosen{margin:0;font-size:17px;font-weight:900;padding-bottom:12px;border-bottom:1px solid var(--rule)}
+.picker .chosen small{display:block;font-size:12px;color:var(--daidai);font-weight:700}
+.picker label{display:grid;gap:4px;font-size:12px;color:var(--ash);font-weight:700}
+.picker select{font-size:15px;background:var(--kuro);border:1px solid var(--rule);padding:12px;color:var(--white)}
+.go{border:0;background:var(--fire);color:#fff;font-weight:900;font-size:16px;padding:16px;cursor:pointer;clip-path:polygon(10px 0,100% 0,calc(100% - 10px) 100%,0 100%)}
+.go:hover{filter:brightness(1.15)}
+.go.wait{background:var(--white);color:var(--kuro)}
+.panel .foot{margin:18px 0 0;font-size:12.5px;color:var(--ash)}
+@media (max-width:900px){.res{grid-template-columns:minmax(0,1fr)}.panel{position:static}}
+
+/* こだわり */
+.kodawari{display:grid;grid-template-columns:1fr 1fr;gap:clamp(28px,5vw,72px);align-items:center}
+.kodawari .ph{aspect-ratio:4/5;clip-path:polygon(0 0,100% 6%,100% 100%,0 94%)}
+.points{list-style:none;margin:0;padding:0;display:grid;gap:30px}
+.points li{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+.points .no{font-family:var(--num);font-size:64px;line-height:.8;background:var(--fire);-webkit-background-clip:text;background-clip:text;color:transparent}
+.points h3{font-size:20px;margin-bottom:4px}
+.points p{margin:0;color:#CFC8BF;font-size:14.5px}
+@media (max-width:860px){.kodawari{grid-template-columns:1fr}.kodawari .ph{aspect-ratio:4/3}}
+
+/* 部位図 */
+.parts{display:grid;grid-template-columns:1.5fr 1fr;gap:32px;align-items:center}
+.cow{width:100%;height:auto;display:block}
+.cow .body{fill:var(--kuro-3)}
+.cow .cut{cursor:pointer;outline:none}
+.cow .cut rect,.cow .cut ellipse{fill:#3A3531;stroke:var(--kuro);stroke-width:3;transition:fill .2s}
+.cow .cut:hover rect,.cow .cut:hover ellipse{fill:#55504A}
+.cow .cut:focus-visible rect,.cow .cut:focus-visible ellipse{stroke:var(--white)}
+.cow .cut[aria-pressed="true"] rect,.cow .cut[aria-pressed="true"] ellipse{fill:url(#fireGrad)}
+.cow text{font-family:var(--sans);font-weight:700;font-size:15px;fill:var(--white);pointer-events:none;text-anchor:middle}
+.cow .leg{fill:var(--kuro-3)}
+.cow .tail{fill:none;stroke:var(--kuro-3);stroke-width:7;stroke-linecap:round}
+@media (prefers-reduced-motion: reduce){.cow .cut rect,.cow .cut ellipse{transition:none}}
+#cutInfo{background:var(--kuro-2);border-left:4px solid var(--hi);padding:26px 26px 24px}
+#cutInfo small{font-family:var(--num);font-size:16px;letter-spacing:.2em;color:var(--daidai)}
+#cutInfo h3{font-size:30px;margin:2px 0 8px}
+#cutInfo p{margin:0 0 14px;color:#CFC8BF}
+#cutInfo .price{margin:0;font-weight:700}
+#cutInfo .price b{font-family:var(--num);font-weight:400;font-size:40px;line-height:1;margin-left:8px;color:var(--white)}
+.cut-list{list-style:none;margin:20px 0 0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.cut-list button{background:transparent;border:1px solid var(--rule);padding:4px 12px;font-size:13px;cursor:pointer}
+.cut-list button:hover{border-color:var(--white)}
+.cut-list button[aria-pressed="true"]{background:var(--white);color:var(--kuro);border-color:var(--white)}
+@media (max-width:860px){.parts{grid-template-columns:1fr}}
+
+/* コース */
+.courses{display:grid;grid-template-columns:repeat(2,1fr);gap:24px}
+.course{background:var(--kuro-2);border:1px solid var(--rule);display:grid;grid-template-rows:auto 1fr}
+.course .ph{aspect-ratio:16/9}
+.course .body{padding:26px 28px 30px;position:relative}
+.course .tag{position:absolute;right:20px;top:-18px;background:var(--fire);font-size:12px;font-weight:900;padding:6px 14px;clip-path:polygon(6px 0,100% 0,calc(100% - 6px) 100%,0 100%)}
+.course h3{font-size:24px}
+.course .meta{margin:0 0 8px;color:var(--ash);font-size:13px}
+.course .price{margin:0 0 16px;font-family:var(--num);font-size:56px;line-height:1}
+.course .price small{font-family:var(--sans);font-size:13px;color:var(--ash);margin-left:6px}
+.course ol{margin:0;padding:16px 0 0 1.4em;border-top:1px solid var(--rule);color:#DCD6CE;font-size:14px;columns:2;column-gap:24px}
+.course.premium{border-color:var(--hi);box-shadow:0 0 0 1px var(--hi),0 20px 60px rgba(226,54,27,.18)}
+@media (max-width:860px){.courses{grid-template-columns:1fr}.course ol{columns:1}}
+
+/* 一品 */
+.alacarte{display:grid;grid-template-columns:repeat(3,1fr);gap:28px}
+.alacarte h3{font-size:16px;color:var(--daidai);margin-bottom:8px;font-family:var(--num);font-weight:400;letter-spacing:.2em;font-size:20px}
+.alacarte h3 span{font-family:var(--sans);font-weight:900;font-size:16px;color:var(--white);letter-spacing:0;margin-left:10px}
+.alacarte dl{margin:0;display:grid;grid-template-columns:1fr auto;font-size:14.5px}
+.alacarte dt,.alacarte dd{padding:9px 0;border-bottom:1px solid var(--rule)}
+.alacarte dd{margin:0;padding-left:16px;font-family:var(--num);font-size:20px;line-height:1.3;text-align:right}
+@media (max-width:860px){.alacarte{grid-template-columns:1fr}}
+
+/* 店内 */
+.interior .ph{aspect-ratio:21/9;clip-path:polygon(0 8%,100% 0,100% 92%,0 100%)}
+.interior .wrap.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:36px}
+.interior h3{font-size:20px}
+.interior h3 .num{font-size:30px;color:var(--daidai);margin-left:8px}
+.interior p{margin:4px 0 0;color:#CFC8BF;font-size:14px}
+@media (max-width:860px){.interior .ph{aspect-ratio:4/3}.interior .wrap.cols{grid-template-columns:1fr}}
+
+/* ご予約案内 */
+.howto{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border:1px solid var(--rule)}
+.howto div{padding:28px 26px}
+.howto div + div{border-left:1px solid var(--rule)}
+.howto .num{font-size:44px;line-height:1;color:var(--daidai)}
+.howto h3{font-size:18px;margin:6px 0 6px}
+.howto p{margin:0;color:#CFC8BF;font-size:14px}
+.howto a{color:var(--daidai);font-weight:700}
+@media (max-width:860px){.howto{grid-template-columns:1fr}.howto div + div{border-left:0;border-top:1px solid var(--rule)}}
+
+/* アクセス */
+.access{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.info{margin:0;display:grid;grid-template-columns:7em 1fr;row-gap:12px;font-size:14.5px}
+.info dt{color:var(--ash);font-weight:700}
+.info dd{margin:0}
+.map{min-height:300px;background:var(--kuro-2);border:1px solid var(--rule);position:relative;overflow:hidden}
+.map::before{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 44%,#2E2A27 44% 47%,transparent 47%),linear-gradient(0deg,transparent 60%,#2E2A27 60% 63%,transparent 63%)}
+.map b{position:absolute;left:52%;top:36%;font-size:13px;font-weight:900;background:var(--fire);padding:3px 14px}
+.map i{position:absolute;left:10%;bottom:22%;font-style:normal;font-size:12px;border:1px solid var(--rule);padding:2px 10px;background:var(--kuro)}
+.map span{position:absolute;right:12px;bottom:8px;font-size:11px;color:var(--ash)}
+@media (max-width:860px){.access{grid-template-columns:1fr}}
+
+footer{border-top:1px solid var(--rule);padding:48px 0 56px;text-align:center;font-size:12px;color:var(--ash);line-height:2.1}
+footer a{color:var(--white)}
+footer .logo{justify-content:center;margin-bottom:12px}
+
+/* dialog */
+dialog{border:1px solid var(--rule);border-top:4px solid var(--hi);padding:0;max-width:460px;width:calc(100% - 32px);background:var(--kuro-2);color:var(--white)}
+dialog::backdrop{background:rgba(0,0,0,.75)}
+.dlg{padding:30px 28px 26px}
+.dlg h2{font-size:21px;margin:0 0 16px}
+.dlg dl{display:grid;grid-template-columns:5em 1fr;row-gap:6px;margin:0 0 16px;font-size:14.5px}
+.dlg dt{color:var(--ash);font-weight:700}
+.dlg dd{margin:0}
+.dlg p{margin:0 0 20px;font-size:13px;color:var(--ash)}
+.dlg .btns{display:flex;flex-wrap:wrap;gap:10px}
+.dlg .btns a,.dlg .btns button{flex:1;min-width:150px;text-align:center;padding:13px;font-size:14px;font-weight:900;cursor:pointer;text-decoration:none;border:0}
+.dlg .btns a{background:var(--fire);color:#fff}
+.dlg .btns button{background:transparent;color:var(--white);box-shadow:inset 0 0 0 1px var(--white)}
+</style>
+</head>
+<body>
+
+<div class="demo-bar">制作実績用のデモサイトです。店舗・料金・空席情報はすべて架空です。制作：<a href="https://alicia0901.github.io/portfolio/">Alicia</a></div>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs><linearGradient id="flameGrad" x1="0" y1="1" x2="0" y2="0"><stop offset="0" stop-color="#E2361B"/><stop offset="1" stop-color="#FF7A1A"/></linearGradient></defs>
+  <symbol id="flame" viewBox="0 0 28 34"><path d="M14 1c2 6 9 9 9 19a9 9 0 0 1-18 0c0-5 3-7 4-11 1 3 2 5 4 6 0-5-1-9 1-14z" fill="url(#flameGrad)"/></symbol>
+</svg>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="炭火焼肉 ひのと トップへ"><svg aria-hidden="true"><use href="#flame"/></svg><span><small>HINOTO</small><b>ひのと</b></span></a>
+    <nav class="head-nav" aria-label="ページ内">
+      <a href="#parts">部位</a><a href="#course">コース</a><a href="#menu">メニュー</a><a href="#access">アクセス</a><a class="cta" href="#reserve">空席を見る</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <figure class="ph" data-label="網の上で焼ける肉"><img src="hinoto-hero.jpg" width="1920" height="1080" alt="炭火の網の上で、脂を弾かせながら焼ける和牛"></figure>
+    <div class="wrap">
+      <p class="kicker">CHARCOAL YAKINIKU</p>
+      <h1>焼く音から、<br><em>うまい。</em></h1>
+      <p class="lead">黒毛和牛を一頭買いして、部位ごとにいちばんおいしい切り方で。炭火でじゅっと焼く、その瞬間からごちそうです。</p>
+      <a class="btn" href="#reserve">空席を見る</a><a class="btn line" href="#parts">部位を知る</a>
+      <ul class="stats">
+        <li><b>A5</b><span>黒毛和牛 一頭買い</span></li>
+        <li><b>8</b><span>部位から選べる</span></li>
+        <li><b>48</b><span>席・個室あり</span></li>
+      </ul>
+    </div>
+  </div>
+
+  <section id="reserve" aria-labelledby="res-t">
+    <div class="wrap">
+      <div class="head"><span class="en" aria-hidden="true">RESERVE</span><h2 id="res-t">空席状況</h2></div>
+      <div class="res">
+        <div>
+          <div class="tabs" role="group" aria-label="日にちを選ぶ"></div>
+          <ul class="rows" aria-label="ご来店時間"></ul>
+        </div>
+        <div class="panel">
+          <h3>ご予約</h3>
+          <p class="hint">一覧からお時間を選んでください。混み具合のバーが短いほど、空いています。</p>
+          <div class="picker" hidden>
+            <p class="chosen" aria-live="polite"></p>
+            <label>人数<select id="rsvPeople"></select></label>
+            <label>コース<select id="rsvCourse">
+              <option value="上カルビコース 全8品（5,980円）">上カルビコース 5,980円</option>
+              <option value="特選和牛コース 全10品（8,980円）">特選和牛コース 8,980円</option>
+              <option value="お席のみ（2時間）">お席のみ</option>
+            </select></label>
+            <button class="go" id="go" type="button">ご予約に進む</button>
+          </div>
+          <p class="foot">13名さま以上・貸切は、お電話でご相談ください。ランチは土日祝のみの営業です。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="kodawari" style="padding-top:0" aria-labelledby="ko-t">
+    <div class="wrap">
+      <div class="head"><span class="en" aria-hidden="true">CRAFT</span><h2 id="ko-t">こだわり</h2></div>
+      <div class="kodawari">
+        <figure class="ph" data-label="真っ赤に熾った炭"><img loading="lazy" src="hinoto-charcoal.jpg" width="1200" height="1500" alt="七輪の中で真っ赤に熾った炭"></figure>
+        <ol class="points">
+          <li><span class="no" aria-hidden="true">01</span><div><h3>黒毛和牛を、一頭まるごと。</h3><p>部位ごとに買うのではなく一頭で仕入れるから、希少部位もお手ごろに。その日いちばんの部位を黒板でご案内します。</p></div></li>
+          <li><span class="no" aria-hidden="true">02</span><div><h3>部位ごとに、切り方を変える。</h3><p>脂の多い部位は薄く、赤身は厚く。同じ牛でも、切り方ひとつで食感が変わります。</p></div></li>
+          <li><span class="no" aria-hidden="true">03</span><div><h3>炭火で、表面を一気に。</h3><p>火力の強い炭で表面を焼き固めて、肉汁を閉じ込めます。焼き方はスタッフがお手伝いします。</p></div></li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <section id="parts" style="padding-top:0" aria-labelledby="parts-t">
+    <div class="wrap">
+      <div class="head"><span class="en" aria-hidden="true">PARTS</span><h2 id="parts-t">部位で選ぶ</h2></div>
+      <p class="lead-text">気になる部位を押すと、味の特徴と価格が出ます。</p>
+      <div class="parts">
+        <svg class="cow" viewBox="0 0 600 330" role="group" aria-label="牛の部位図">
+          <defs>
+            <linearGradient id="fireGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#E2361B"/><stop offset="1" stop-color="#FF7A1A"/></linearGradient>
+            <clipPath id="cowClip"><path id="cowPath" d="M132 92C170 70 260 78 330 80C400 80 470 72 520 84C548 90 556 120 552 150C550 175 545 200 538 222C510 250 450 258 380 258C300 262 240 258 205 250C185 246 165 240 150 226C140 212 137 198 134 188C118 184 100 178 82 176L44 170C28 168 20 152 30 140L70 108C80 98 95 94 104 96L110 78L122 92Z"/></clipPath>
+          </defs>
+          <path class="tail" d="M550 104C572 120 576 160 570 200"/>
+          <path class="leg" d="M172 236L162 312H192L204 248ZM212 248L206 312H234L238 252ZM468 252L470 312H498L500 246ZM506 240L512 312H540L538 222Z"/>
+          <use href="#cowPath" class="body"/>
+          <circle cx="94" cy="124" r="4.5" fill="#0E0D0C"/><circle cx="36" cy="148" r="3" fill="#0E0D0C"/><path d="M108 82C104 66 112 56 124 52C118 62 118 72 122 88Z" fill="#3A3531"/>
+          <g clip-path="url(#cowClip)">
+            <g class="cut" data-cut="kata" role="button" tabindex="0" aria-label="肩ロース"><rect x="96" y="60" width="128" height="104"/></g>
+            <g class="cut" data-cut="rib" role="button" tabindex="0" aria-label="リブロース"><rect x="224" y="60" width="100" height="94"/></g>
+            <g class="cut" data-cut="sirloin" role="button" tabindex="0" aria-label="サーロイン"><rect x="324" y="60" width="100" height="94"/></g>
+            <g class="cut" data-cut="rump" role="button" tabindex="0" aria-label="ランプ"><rect x="424" y="60" width="140" height="110"/></g>
+            <g class="cut" data-cut="harami" role="button" tabindex="0" aria-label="ハラミ"><rect x="224" y="154" width="100" height="40"/></g>
+            <g class="cut" data-cut="hire" role="button" tabindex="0" aria-label="ヒレ"><rect x="324" y="154" width="100" height="40"/></g>
+            <g class="cut" data-cut="karubi" role="button" tabindex="0" aria-label="カルビ（バラ）"><rect x="200" y="194" width="250" height="80"/></g>
+            <g class="cut" data-cut="tan" role="button" tabindex="0" aria-label="タン"><ellipse cx="58" cy="160" rx="26" ry="11"/></g>
+          </g>
+          <g aria-hidden="true">
+            <text x="166" y="120">肩ロース</text><text x="274" y="114">リブロース</text><text x="374" y="114">サーロイン</text>
+            <text x="490" y="124">ランプ</text><text x="274" y="179">ハラミ</text><text x="374" y="179">ヒレ</text>
+            <text x="325" y="232">カルビ（バラ）</text><text x="60" y="196">タン</text>
+          </g>
+        </svg>
+        <div>
+          <div id="cutInfo" aria-live="polite"><small>CUT</small><h3></h3><p class="desc"></p><p class="price"></p></div>
+          <ul class="cut-list" aria-label="部位を選ぶ"></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="course" style="padding-top:0" aria-labelledby="course-t">
+    <div class="wrap">
+      <div class="head"><span class="en" aria-hidden="true">COURSE</span><h2 id="course-t">コース</h2></div>
+      <p class="lead-text">2名さまから、ご予約で承ります。料金は税込・お一人さまです。</p>
+      <div class="courses">
+        <article class="course">
+          <figure class="ph" data-label="上カルビコースの盛り合わせ"><img loading="lazy" src="hinoto-course.jpg" width="1600" height="900" alt="上カルビやロースが並ぶコースの盛り合わせ"></figure>
+          <div class="body">
+            <h3>上カルビコース</h3><p class="meta">全8品・ご滞在2時間</p>
+            <p class="price">5,980<small>円</small></p>
+            <ol><li>キムチとナムル</li><li>ひのとサラダ</li><li>上タン塩</li><li>上カルビ</li><li>肩ロース</li><li>ホルモン盛り</li><li>冷麺またはクッパ</li><li>アイス</li></ol>
+          </div>
+        </article>
+        <article class="course premium">
+          <figure class="ph" data-label="特選和牛の盛り合わせ"><img loading="lazy" src="hinoto-wagyu.jpg" width="1600" height="900" alt="サシの入った特選和牛の盛り合わせ"></figure>
+          <div class="body">
+            <span class="tag">記念日に</span>
+            <h3>特選和牛コース</h3><p class="meta">全10品・ご滞在2時間30分</p>
+            <p class="price">8,980<small>円</small></p>
+            <ol><li>前菜三種</li><li>ひのとサラダ</li><li>特上タン塩</li><li>特選リブロース</li><li>サーロインの炙り</li><li>特選ヒレ</li><li>希少部位の食べ比べ</li><li>厚切りハラミ</li><li>冷麺またはクッパ</li><li>季節のデザート</li></ol>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="menu" style="padding-top:0" aria-labelledby="menu-t">
+    <div class="wrap">
+      <div class="head"><span class="en" aria-hidden="true">MENU</span><h2 id="menu-t">一品メニュー</h2></div>
+      <div class="alacarte">
+        <div><h3>MEAT<span>お肉</span></h3><dl><dt>上タン塩</dt><dd>1,980</dd><dt>上カルビ</dt><dd>1,580</dd><dt>厚切りハラミ</dt><dd>1,480</dd><dt>特選リブロース</dt><dd>2,480</dd></dl></div>
+        <div><h3>HORUMON<span>ホルモン</span></h3><dl><dt>シマチョウ</dt><dd>780</dd><dt>ミノ</dt><dd>880</dd><dt>レバー（加熱用）</dt><dd>680</dd><dt>ホルモン盛り合わせ</dt><dd>1,480</dd></dl></div>
+        <div><h3>SIDE<span>ごはん・サイド</span></h3><dl><dt>キムチ盛り合わせ</dt><dd>680</dd><dt>ナムル盛り合わせ</dt><dd>580</dd><dt>石焼ビビンバ</dt><dd>1,080</dd><dt>冷麺</dt><dd>980</dd></dl></div>
+      </div>
+      <p class="lead-text" style="margin:20px 0 0;font-size:13px">価格は税込（円）です。</p>
+    </div>
+  </section>
+
+  <div class="interior" id="seats" aria-labelledby="seats-t">
+    <figure class="ph" data-label="店内"><img loading="lazy" src="hinoto-interior.jpg" width="2100" height="900" alt="無煙ロースターのテーブルが並ぶ、照明を落とした店内"></figure>
+    <div class="wrap cols">
+      <div class="head" style="margin:0"><h2 id="seats-t">店内</h2></div>
+      <div><h3>テーブル<span class="num">40</span>席</h3><p>無煙ロースター付き。服ににおいがつきにくいお席です。</p></div>
+      <div><h3>個室<span class="num">2</span>室</h3><p>4名さま用の個室が2室。接待や記念日に。</p></div>
+    </div>
+  </div>
+
+  <section id="howto" aria-labelledby="howto-t">
+    <div class="wrap">
+      <div class="head"><span class="en" aria-hidden="true">HOW TO</span><h2 id="howto-t">ご予約案内</h2></div>
+      <div class="howto">
+        <div><span class="num">01</span><h3>ネットで予約</h3><p>空席状況から日にち・時間・人数・コースを選んでお申し込みください。確認のメールがすぐに届きます。</p></div>
+        <div><span class="num">02</span><h3>満席のときは</h3><p>キャンセル待ちにご登録いただくと、お席が空いたときにメールでお知らせします。</p></div>
+        <div><span class="num">03</span><h3>個室・記念日</h3><p>個室のご希望や記念日のプレートは、ご予約のときにお知らせください。<br><a href="#reserve">空席状況を見る</a></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="access" style="padding-top:0" aria-labelledby="access-t">
+    <div class="wrap">
+      <div class="head"><span class="en" aria-hidden="true">ACCESS</span><h2 id="access-t">アクセス</h2></div>
+      <div class="access">
+        <dl class="info">
+          <dt>住所</dt><dd>東京都架空区ほむら町四丁目7-10</dd>
+          <dt>最寄り駅</dt><dd>ほむら町駅 北口より徒歩4分</dd>
+          <dt>営業時間</dt><dd>17:00〜23:00（L.O. 22:30）<br>土日祝のみランチ 11:30〜14:30</dd>
+          <dt>定休日</dt><dd>火曜日</dd>
+          <dt>電話</dt><dd>00-0000-0000（架空）</dd>
+          <dt>お支払い</dt><dd>現金・各種カード・電子マネー・QRコード決済</dd>
+        </dl>
+        <div class="map" role="img" aria-label="地図のイメージ"><b>ひのと</b><i>ほむら町駅</i><span>地図はイメージです</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="logo"><svg aria-hidden="true"><use href="#flame"/></svg><b>ひのと</b></div>
+  <p>炭火焼肉 ひのと（架空店舗）｜制作実績用デモサイト<br>空席表示は、制作者が開発した<a href="https://alicia0901.github.io/portfolio/project.html?id=inshokuten">飲食店予約システム</a>との連携イメージです<br>写真：AI生成イメージ｜制作：<a href="https://alicia0901.github.io/portfolio/">Alicia</a></p>
+</footer>
+
+<dialog id="dlg" aria-labelledby="dlg-t">
+  <div class="dlg">
+    <h2 id="dlg-t"></h2>
+    <dl></dl>
+    <p class="dlg-note"></p>
+    <div class="btns">
+      <a href="https://alicia0901.github.io/portfolio/project.html?id=inshokuten">予約システムを見る</a>
+      <button type="button" data-close>閉じる</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+/* 写真枠：画像が読めないときは枠のラベルを見せる */
+document.querySelectorAll("figure.ph img").forEach((img) => {
+  const fig = img.closest("figure");
+  const empty = () => fig.classList.add("is-empty");
+  if (img.complete && img.naturalWidth === 0) empty();
+  img.addEventListener("error", empty);
+  img.addEventListener("load", () => fig.classList.remove("is-empty"));
+});
+
+/* 部位図 */
+const CUTS = {
+  tan:     { name: "タン", menu: "上タン塩", price: "1,980円", desc: "根元の厚い部分だけを使った、ひのと名物。さっくりとした歯ごたえに、レモンをきゅっと。" },
+  kata:    { name: "肩ロース", menu: "肩ロース", price: "1,280円", desc: "赤身と脂のバランスがよく、噛むほどに旨みが出る部位。タレとの相性が抜群です。" },
+  rib:     { name: "リブロース", menu: "特選リブロース", price: "2,480円", desc: "きめ細かいサシが入った、ロースの中心。さっと炙る程度でどうぞ。" },
+  sirloin: { name: "サーロイン", menu: "サーロインの炙り", price: "2,980円", desc: "甘い脂がとろける、ステーキでおなじみの部位。わさび醤油でさっぱりと。" },
+  hire:    { name: "ヒレ", menu: "特選ヒレ", price: "3,280円", desc: "一頭からわずかしか取れない、いちばんやわらかな赤身。厚切りでお出しします。" },
+  rump:    { name: "ランプ", menu: "ランプ", price: "1,680円", desc: "脂が少なく、赤身の味が濃い部位。さっぱり食べたい方に。" },
+  karubi:  { name: "カルビ（バラ）", menu: "上カルビ", price: "1,580円", desc: "焼肉の定番。濃い脂の甘みで、ご飯がすすみます。" },
+  harami:  { name: "ハラミ", menu: "厚切りハラミ", price: "1,480円", desc: "実は横隔膜の部位。やわらかくジューシーで、いちばん人気です。" }
+};
+const info = document.getElementById("cutInfo");
+const list = document.querySelector(".cut-list");
+const svgCuts = document.querySelectorAll(".cow .cut");
+Object.entries(CUTS).forEach(([id, c]) => {
+  const li = document.createElement("li");
+  const b = document.createElement("button");
+  b.type = "button"; b.dataset.cut = id; b.textContent = c.name;
+  b.addEventListener("click", () => selectCut(id));
+  li.appendChild(b); list.appendChild(li);
+});
+function selectCut(id){
+  const c = CUTS[id];
+  info.querySelector("h3").textContent = c.name;
+  info.querySelector(".desc").textContent = c.desc;
+  info.querySelector(".price").innerHTML = "";
+  info.querySelector(".price").append(c.menu, Object.assign(document.createElement("b"), { textContent: c.price }));
+  svgCuts.forEach((g) => g.setAttribute("aria-pressed", String(g.dataset.cut === id)));
+  list.querySelectorAll("button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.cut === id)));
+}
+svgCuts.forEach((g) => {
+  g.addEventListener("click", () => selectCut(g.dataset.cut));
+  g.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") { e.preventDefault(); selectCut(g.dataset.cut); }
+  });
+});
+selectCut("harami");
+
+/* 空席のデモ。
+   実店舗では飲食店予約システム（Google Apps Script）が
+   「総座席数 × コースのご滞在時間」から時間帯ごとの空席を計算して返します。
+   このページでは日付と時間から決まった値を生成して表示しています。 */
+const TOTAL = 48;
+const CLOSED = [2]; // 火曜定休
+const DINNER = ["17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00"];
+const DINNER_PEAK = [3,5,8,10,11,10,8,5,3];
+const LUNCH = ["11:30","12:00","12:30","13:00"];
+const LUNCH_PEAK = [5,8,8,4];
+const WD = ["日","月","火","水","木","金","土"];
+const tabsEl = document.querySelector(".tabs");
+const rowsEl = document.querySelector(".rows");
+const picker = document.querySelector(".picker");
+const hint = document.querySelector(".panel .hint");
+const chosen = document.querySelector(".chosen");
+const people = document.getElementById("rsvPeople");
+const go = document.getElementById("go");
+const dlg = document.getElementById("dlg");
+
+for (let n = 1; n <= 12; n++) people.add(new Option(`${n}名`, String(n), false, n === 2));
+
+const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const label = (d) => `${d.getMonth()+1}月${d.getDate()}日（${WD[d.getDay()]}）`;
+const isWeekend = (d) => d.getDay() === 0 || d.getDay() === 6;
+function openDays(count){
+  const out = [];
+  const t = new Date(); t.setHours(12,0,0,0);
+  for (let i = 0; out.length < count && i < 30; i++){
+    const d = new Date(t); d.setDate(t.getDate() + i);
+    if (!CLOSED.includes(d.getDay())) out.push(d);
+  }
+  return out;
+}
+function seatsLeft(d, peak, idx){
+  const seed = d.getDate()*41 + d.getMonth()*13 + idx*19 + peak*3;
+  const busy = d.getDay() === 5 || d.getDay() === 6 ? 6 : 0;
+  return Math.max(0, TOTAL - Math.min(TOTAL, peak*4 + busy + (seed % 11)));
+}
+const DAYS = openDays(7);
+let state = { day: 0, time: null, left: 0 };
+
+function renderTabs(){
+  tabsEl.replaceChildren();
+  const today = ymd(new Date());
+  DAYS.forEach((d, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.dataset.day = ymd(d);
+    if (isWeekend(d)) b.className = "weekend";
+    b.setAttribute("aria-pressed", String(i === state.day));
+    b.innerHTML = `<span class="num">${d.getMonth()+1}/${d.getDate()}</span><small>${ymd(d) === today ? "今日" : WD[d.getDay()] + "曜"}</small>`;
+    b.setAttribute("aria-label", label(d));
+    b.addEventListener("click", () => { state = { day: i, time: null, left: 0 }; closePicker(); renderTabs(); renderRows(); });
+    tabsEl.appendChild(b);
+  });
+}
+function addGroup(name, times, peaks, d){
+  const head = document.createElement("li");
+  head.className = "label"; head.textContent = name; head.setAttribute("aria-hidden", "true");
+  rowsEl.appendChild(head);
+  times.forEach((t, idx) => {
+    const left = seatsLeft(d, peaks[idx], idx);
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "row" + (left === 0 ? " full" : left <= 8 ? " few" : "");
+    b.dataset.slot = "";
+    b.dataset.date = ymd(d);
+    b.dataset.time = t;
+    b.dataset.left = String(left);
+    b.setAttribute("aria-pressed", String(state.time === t));
+    const text = left === 0 ? "満席" : `残り${left}席`;
+    b.setAttribute("aria-label", `${t} ${text}`);
+    const fill = Math.round((TOTAL - left) / TOTAL * 100);
+    b.innerHTML = `<span class="t">${t}</span><span class="bar" aria-hidden="true"><i style="width:${fill}%"></i></span><span class="s">${left === 0 ? "満席" : `残り<b>${left}</b>席`}</span>`;
+    b.addEventListener("click", () => { state.time = t; state.left = left; renderRows(); openPicker(); });
+    li.appendChild(b); rowsEl.appendChild(li);
+  });
+}
+function renderRows(){
+  const d = DAYS[state.day];
+  rowsEl.replaceChildren();
+  if (isWeekend(d)) addGroup("LUNCH", LUNCH, LUNCH_PEAK, d);
+  addGroup("DINNER", DINNER, DINNER_PEAK, d);
+}
+const isWait = () => state.left === 0 || Number(people.value) > state.left;
+function updateGo(){
+  const wait = isWait();
+  go.textContent = wait ? "キャンセル待ちに登録" : "ご予約に進む";
+  go.classList.toggle("wait", wait);
+}
+function openPicker(){
+  picker.hidden = false; hint.hidden = true;
+  chosen.innerHTML = "";
+  chosen.append(
+    Object.assign(document.createElement("small"), { textContent: state.left === 0 ? "満席" : `残り${state.left}席` }),
+    `${label(DAYS[state.day])} ${state.time}〜`
+  );
+  updateGo();
+  if (matchMedia("(max-width: 900px)").matches){
+    const smooth = !matchMedia("(prefers-reduced-motion: reduce)").matches;
+    document.querySelector(".panel").scrollIntoView({ behavior: smooth ? "smooth" : "auto", block: "nearest" });
+  }
+}
+function closePicker(){ picker.hidden = true; hint.hidden = false; }
+people.addEventListener("change", updateGo);
+go.addEventListener("click", () => {
+  const wait = isWait();
+  dlg.querySelector("h2").textContent = wait ? "キャンセル待ちのご登録内容" : "ご予約内容の確認";
+  const dl = dlg.querySelector("dl");
+  dl.replaceChildren();
+  [["日時", `${label(DAYS[state.day])} ${state.time}〜`], ["人数", `${people.value}名`], ["コース", document.getElementById("rsvCourse").value]]
+    .forEach(([k, v]) => {
+      const dt = document.createElement("dt"); dt.textContent = k;
+      const dd = document.createElement("dd"); dd.textContent = v;
+      dl.append(dt, dd);
+    });
+  dlg.querySelector(".dlg-note").textContent = wait
+    ? "デモのため登録はされません。実際のシステムでは、お席が空いたときに自動でメールが届きます。"
+    : "デモのため予約は確定しません。実際のシステムでは、ご予約の受付・確認メール・店舗カレンダーへの登録までが自動で行われます。";
+  dlg.showModal();
+});
+dlg.addEventListener("click", (e) => { if (e.target === dlg || e.target.hasAttribute("data-close")) dlg.close(); });
+renderTabs(); renderRows();
+</script>
+</body>
+</html>
