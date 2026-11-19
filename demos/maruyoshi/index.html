@@ -1,0 +1,553 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>大衆酒場 まるよし｜焼き鳥と宴会の店（制作デモ）</title>
+<meta name="description" content="駅前の大衆酒場。焼き鳥・もつ煮・刺身と、飲み放題付きの宴会コース。宴会の空きをその場で確認して予約できます。※制作実績用の架空店舗デモサイトです。">
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Dela+Gothic+One&family=Yusei+Magic&display=swap" rel="stylesheet">
+<style>
+:root{
+  --aka:#C8261E;        /* 赤提灯 */
+  --aka-dark:#9E1B15;
+  --kinari:#F6EEDC;     /* 生成り */
+  --kinari-2:#EFE3C8;
+  --sumi:#1E1A17;       /* 墨 */
+  --sumi-soft:#4A423B;
+  --ki:#F2B705;         /* 黄 */
+  --kiji:#6B4426;       /* 木地 */
+  --rule:rgba(30,26,23,.18);
+  --display:"Dela Gothic One","Hiragino Kaku Gothic StdN","Noto Sans JP",sans-serif;
+  --hand:"Yusei Magic","Hiragino Maru Gothic ProN","Noto Sans JP",sans-serif;
+  --body:"Hiragino Kaku Gothic ProN","Noto Sans JP","Yu Gothic",Meiryo,sans-serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{margin:0;color:var(--sumi);font-family:var(--body);font-size:15px;line-height:1.85;
+  background-color:var(--kinari);
+  background-image:radial-gradient(rgba(107,68,38,.07) 1px,transparent 1.2px),radial-gradient(rgba(107,68,38,.05) 1px,transparent 1.2px);
+  background-size:22px 22px,31px 31px;background-position:0 0,11px 17px}
+img{display:block;max-width:100%}
+a{color:inherit}
+button,select{font:inherit;color:inherit}
+h1,h2,h3{font-weight:400;margin:0;word-break:auto-phrase}
+:focus-visible{outline:3px solid var(--ki);outline-offset:3px}
+.wrap{width:min(1120px,100% - 40px);margin-inline:auto}
+.demo-bar{background:var(--sumi);color:#CFC6B8;font-size:11.5px;line-height:1.6;padding:7px 16px;text-align:center}
+.demo-bar a{color:#fff}
+
+/* 写真枠（画像が無いあいだはラベル付きの面を出す） */
+.ph{position:relative;margin:0;overflow:hidden;background:repeating-linear-gradient(-45deg,var(--kinari-2) 0 14px,#E8DABB 14px 28px)}
+.ph img{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:cover}
+.ph.is-empty img{display:none}
+.ph::after{content:"写真：" attr(data-label) "（イメージ）";position:absolute;inset:0;display:grid;place-items:center;padding:16px;text-align:center;font-family:var(--hand);font-size:14px;color:var(--kiji);line-height:1.6}
+
+/* header */
+.site-head{position:sticky;top:0;z-index:10;background:var(--sumi);color:var(--kinari)}
+.site-head .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:64px}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo .mon{width:40px;height:40px;border-radius:50%;background:var(--aka);color:#fff;display:grid;place-items:center;font-family:var(--display);font-size:20px;box-shadow:0 0 0 3px var(--sumi),0 0 0 5px var(--aka)}
+.logo b{font-family:var(--display);font-weight:400;font-size:20px;letter-spacing:.08em}
+.logo small{display:block;font-size:10px;letter-spacing:.2em;color:#CFC6B8;line-height:1}
+.head-nav{display:flex;align-items:center;gap:22px;font-size:13.5px;font-weight:700}
+.head-nav a{text-decoration:none;opacity:.9}
+.head-nav a:hover{color:var(--ki)}
+.head-nav .cta{background:var(--aka);color:#fff;padding:9px 16px;border-radius:999px;opacity:1}
+.head-nav .cta:hover{background:var(--ki);color:var(--sumi)}
+@media (max-width:820px){.head-nav a:not(.cta){display:none}}
+
+/* hero */
+.hero{position:relative;padding:56px 0 72px;overflow:hidden}
+.hero::before{content:"";position:absolute;right:-14%;top:-30%;width:54%;height:160%;background:var(--aka);transform:rotate(12deg);z-index:-1}
+.hero .wrap{display:grid;grid-template-columns:1.05fr .95fr;gap:48px;align-items:center}
+.hero .tag{display:inline-block;font-family:var(--hand);font-size:15px;background:var(--ki);padding:2px 14px;border-radius:4px;transform:rotate(-2deg);margin-bottom:18px}
+.hero h1{font-family:var(--display);font-size:clamp(40px,5.4vw,76px);line-height:1.12;letter-spacing:.02em}
+.hero h1 em{font-style:normal;color:var(--aka)}
+.hero .lead{margin:22px 0 30px;font-size:16px;font-weight:700;max-width:26em}
+.btns{display:flex;flex-wrap:wrap;gap:12px}
+.btn{display:inline-flex;align-items:center;gap:8px;text-decoration:none;font-weight:700;padding:14px 26px;border-radius:999px;border:3px solid var(--sumi);transition:transform .15s,box-shadow .15s}
+.btn.red{background:var(--aka);color:#fff;box-shadow:4px 4px 0 var(--sumi)}
+.btn.plain{background:var(--kinari);box-shadow:4px 4px 0 var(--sumi)}
+.btn:hover{transform:translate(-2px,-2px);box-shadow:6px 6px 0 var(--sumi)}
+@media (prefers-reduced-motion: reduce){.btn{transition:none}.btn:hover{transform:none}}
+.hero-photo{position:relative;justify-self:center;width:min(100%,480px)}
+.hero-photo .ph{aspect-ratio:4/5;border:10px solid #fff;box-shadow:0 18px 40px rgba(0,0,0,.28);transform:rotate(2.5deg)}
+.hero-photo .ph::before{content:"";position:absolute;z-index:2;top:-12px;left:50%;width:120px;height:30px;margin-left:-60px;background:rgba(242,183,5,.75);transform:rotate(-4deg)}
+.stamp{position:absolute;left:-28px;bottom:28px;width:118px;height:118px;border-radius:50%;background:var(--ki);border:3px solid var(--sumi);display:grid;place-items:center;text-align:center;font-family:var(--display);font-size:13px;line-height:1.35;transform:rotate(-12deg);box-shadow:4px 4px 0 var(--sumi)}
+.stamp span{display:block}
+.stamp b{display:block;font-weight:400;font-size:24px;color:var(--aka)}
+@media (max-width:820px){
+  .hero{padding:32px 0 56px}
+  .hero::before{right:-40%;top:auto;bottom:-20%;width:120%;height:50%;transform:rotate(-8deg)}
+  .hero .wrap{grid-template-columns:1fr;gap:40px}
+  .stamp{left:-6px;width:100px;height:100px;font-size:12px}
+  .stamp b{font-size:20px}
+}
+
+/* ticker */
+.ticker{background:var(--aka);color:#fff;border-block:3px solid var(--sumi);overflow:hidden;white-space:nowrap}
+.ticker div{display:inline-flex;gap:0;padding:10px 0;font-family:var(--display);font-size:17px;letter-spacing:.06em;animation:tick 38s linear infinite}
+.ticker span{padding:0 22px}
+.ticker span::after{content:"●";color:var(--ki);margin-left:44px;font-size:10px;vertical-align:middle}
+@keyframes tick{to{transform:translateX(-50%)}}
+@media (prefers-reduced-motion: reduce){.ticker div{animation:none}}
+
+/* section heading */
+section{padding:clamp(72px,10vw,120px) 0}
+.head{display:flex;align-items:flex-end;flex-wrap:wrap;gap:6px 18px;margin-bottom:36px}
+.head h2{font-family:var(--display);font-size:clamp(30px,4.4vw,48px);line-height:1.2}
+.head p{margin:0;font-family:var(--hand);font-size:17px;color:var(--aka);transform:rotate(-2deg)}
+.note{font-size:13px;color:var(--sumi-soft)}
+
+/* 空き状況（貼り紙） */
+.board{position:relative;background:#FFFDF6;border:3px solid var(--sumi);border-radius:6px;padding:clamp(20px,4vw,40px);box-shadow:8px 8px 0 var(--sumi)}
+.board::before,.board::after{content:"";position:absolute;top:-10px;width:18px;height:18px;border-radius:50%;background:var(--aka);border:3px solid var(--sumi)}
+.board::before{left:28px}.board::after{right:28px}
+.board-top{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;align-items:baseline;margin-bottom:18px}
+.board-top p{margin:0;font-weight:700}
+.legend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:12.5px;color:var(--sumi-soft)}
+.legend b{font-family:var(--hand);font-weight:400;font-size:16px;color:var(--sumi);margin-right:4px}
+.legend b.x{font-family:var(--body);font-weight:700}
+.days{display:flex;gap:10px;overflow-x:auto;padding:4px 4px 12px;margin:0 -4px 14px;scroll-snap-type:x mandatory}
+.days button{flex:1 0 96px;scroll-snap-align:start;border:2px solid var(--sumi);background:#fff;border-radius:8px;padding:8px 6px;cursor:pointer;line-height:1.35;font-weight:700;font-size:17px}
+.days button small{display:block;font-size:11px;font-weight:400;color:var(--sumi-soft)}
+.days button.sat small{color:#2B5FA8}
+.days button[aria-pressed="true"]{background:var(--aka);border-color:var(--aka);color:#fff;box-shadow:3px 3px 0 var(--sumi)}
+.days button[aria-pressed="true"] small{color:#FFE7E2}
+.slots{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(9,1fr);gap:8px}
+.slot{width:100%;background:#fff;border:2px solid var(--rule);border-radius:8px;padding:10px 4px 8px;cursor:pointer;line-height:1.3;text-align:center}
+.slot:hover{border-color:var(--sumi)}
+.slot .t{display:block;font-weight:700;font-size:15px}
+.slot .m{display:block;font-family:var(--hand);font-size:30px;line-height:1.2;color:var(--aka)}
+.slot .s{display:block;font-size:11px;color:var(--sumi-soft)}
+.slot.full{background:#EDE7DA}
+.slot.full .m{color:#8F877C;font-family:var(--body);font-weight:700;font-size:26px}
+.slot[aria-pressed="true"]{border-color:var(--sumi);background:var(--ki);box-shadow:3px 3px 0 var(--sumi)}
+.slot[aria-pressed="true"] .m{color:var(--sumi)}
+@media (max-width:900px){.slots{grid-template-columns:repeat(5,1fr)}}
+@media (max-width:520px){.slots{grid-template-columns:repeat(3,1fr)}}
+.picker{display:grid;grid-template-columns:1fr auto auto auto;gap:14px;align-items:end;margin-top:22px;padding-top:20px;border-top:2px dashed var(--rule)}
+.picker[hidden]{display:none}
+.picker .chosen{margin:0;font-weight:700;font-size:17px}
+.picker label{display:grid;gap:4px;font-size:12px;font-weight:700}
+.picker select{font-size:15px;background:#fff;border:2px solid var(--sumi);border-radius:8px;padding:10px 12px;max-width:100%}
+.go{border:3px solid var(--sumi);background:var(--aka);color:#fff;font-weight:700;padding:12px 26px;border-radius:999px;cursor:pointer;box-shadow:4px 4px 0 var(--sumi)}
+.go:hover{background:var(--aka-dark)}
+.go.wait{background:var(--kinari);color:var(--sumi)}
+@media (max-width:820px){.picker{grid-template-columns:1fr 1fr}.picker .chosen,.go{grid-column:1/-1}.picker label:nth-of-type(2){grid-column:1/-1}}
+.board-foot{margin:16px 0 0;font-size:13px}
+
+/* 宴会コース */
+.enkai{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.course{background:#fff;border:3px solid var(--sumi);border-radius:10px;overflow:hidden;display:flex;flex-direction:column}
+.course header{background:var(--sumi);color:var(--kinari);padding:14px 20px}
+.course header small{display:block;font-family:var(--hand);color:var(--ki);font-size:14px}
+.course h3{font-family:var(--display);font-size:22px}
+.course.best{box-shadow:8px 8px 0 var(--aka)}
+.course.best header{background:var(--aka);color:#fff}
+.course.best header small{color:#FFE48A}
+.course .body{padding:18px 20px 22px;display:flex;flex-direction:column;flex:1}
+.course .price{font-family:var(--display);font-size:38px;line-height:1.1;color:var(--aka);margin:0}
+.course .price small{font-family:var(--body);font-size:12px;color:var(--sumi-soft);margin-left:4px}
+.course .spec{display:flex;flex-wrap:wrap;gap:6px;margin:12px 0 14px;padding:0;list-style:none}
+.course .spec li{font-size:12px;font-weight:700;background:var(--kinari);border:1.5px solid var(--sumi);border-radius:999px;padding:1px 10px}
+.course .menu{margin:0;padding:14px 0 0;border-top:2px dashed var(--rule);list-style:none;font-size:14px;line-height:2}
+.course .menu li::before{content:"・";color:var(--aka)}
+@media (max-width:900px){.enkai{grid-template-columns:1fr}}
+.enkai-photo{margin-top:40px;display:grid;grid-template-columns:1.4fr 1fr;gap:28px;align-items:center}
+.enkai-photo .ph{aspect-ratio:16/10;border-radius:10px;border:3px solid var(--sumi)}
+.enkai-photo ul{margin:0;padding:0;list-style:none;display:grid;gap:12px}
+.enkai-photo li{background:var(--ki);border:2px solid var(--sumi);border-radius:8px;padding:10px 14px;font-weight:700;font-size:14px}
+@media (max-width:820px){.enkai-photo{grid-template-columns:1fr}}
+
+/* 品書き（短冊） */
+.oshinagaki{background:var(--kiji);color:var(--kinari);background-image:repeating-linear-gradient(90deg,rgba(0,0,0,.08) 0 2px,transparent 2px 46px)}
+.oshinagaki .head p{color:var(--ki)}
+.wall{display:flex;flex-wrap:wrap;justify-content:center;gap:16px 14px}
+.tanzaku{writing-mode:vertical-rl;text-orientation:upright;background:var(--kinari);color:var(--sumi);font-family:var(--hand);font-size:21px;letter-spacing:.06em;padding:18px 10px 14px;min-height:250px;width:64px;box-shadow:3px 4px 0 rgba(0,0,0,.35);display:flex;justify-content:space-between;align-items:center;margin:0}
+.tanzaku:nth-child(odd){transform:rotate(-1.5deg)}
+.tanzaku:nth-child(3n){transform:rotate(1.8deg)}
+.tanzaku span{font-size:18px;color:var(--aka)}
+.tcy{font-style:normal;text-combine-upright:all}
+.tanzaku.osusume{background:var(--aka);color:#fff;width:84px;font-size:19px}
+.tanzaku.osusume span{color:var(--ki)}
+.tanzaku.osusume small{font-size:14px;color:var(--ki);text-orientation:upright}
+@media (max-width:520px){.tanzaku{width:54px;min-height:210px;font-size:18px}}
+.wall-photos{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:48px}
+.wall-photos .ph{aspect-ratio:3/2;border:8px solid var(--kinari)}
+.wall-photos .cap{font-family:var(--hand);font-size:16px;margin:8px 0 0}
+@media (max-width:640px){.wall-photos{grid-template-columns:1fr}}
+
+/* 店内 */
+.seats{display:grid;grid-template-columns:repeat(3,1fr);gap:24px}
+.seat .ph{aspect-ratio:4/3;border-radius:10px;border:3px solid var(--sumi);margin-bottom:14px}
+.seat h3{font-family:var(--display);font-size:22px}
+.seat h3 small{font-family:var(--body);font-weight:700;font-size:14px;color:var(--aka);margin-left:8px}
+.seat p{margin:6px 0 0;font-size:14px}
+@media (max-width:820px){.seats{grid-template-columns:1fr}}
+
+/* ご予約案内 */
+.howto{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;counter-reset:step}
+.howto div{background:#fff;border:3px solid var(--sumi);border-radius:10px;padding:22px 20px;position:relative}
+.howto div::before{counter-increment:step;content:counter(step);position:absolute;top:-18px;left:16px;width:38px;height:38px;border-radius:50%;background:var(--aka);color:#fff;border:3px solid var(--sumi);display:grid;place-items:center;font-family:var(--display);font-size:17px}
+.howto h3{font-family:var(--display);font-size:19px;margin-top:6px}
+.howto p{margin:8px 0 0;font-size:14px}
+.howto a{color:var(--aka);font-weight:700}
+@media (max-width:820px){.howto{grid-template-columns:1fr;gap:30px}}
+
+/* アクセス */
+.access{display:grid;grid-template-columns:1fr 1fr;gap:40px}
+.info{margin:0;display:grid;grid-template-columns:6.5em 1fr;row-gap:12px;font-size:14.5px;background:#fff;border:3px solid var(--sumi);border-radius:10px;padding:24px}
+.info dt{font-weight:700;color:var(--aka)}
+.info dd{margin:0}
+.map{min-height:280px;border:3px solid var(--sumi);border-radius:10px;position:relative;background:#E9E1CD;overflow:hidden}
+.map::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,transparent 46%,#fff 46% 50%,transparent 50%),linear-gradient(0deg,transparent 58%,#fff 58% 62%,transparent 62%),linear-gradient(0deg,transparent 18%,#C9BFA8 18% 22%,transparent 22%)}
+.map b{position:absolute;left:52%;top:28%;font-family:var(--display);font-weight:400;font-size:13px;color:#fff;background:var(--aka);border:2px solid var(--sumi);padding:3px 12px;border-radius:999px}
+.map i{position:absolute;left:12%;bottom:24%;font-style:normal;font-size:12px;font-weight:700;background:var(--sumi);color:#fff;padding:2px 10px;border-radius:4px}
+.map span{position:absolute;right:12px;bottom:8px;font-size:11px;color:var(--sumi-soft)}
+@media (max-width:820px){.access{grid-template-columns:1fr}}
+
+footer{background:var(--sumi);color:#CFC6B8;padding:44px 0;text-align:center;font-size:12px;line-height:2}
+footer a{color:#fff}
+footer .logo{justify-content:center;margin-bottom:14px;color:var(--kinari)}
+
+/* dialog */
+dialog{border:3px solid var(--sumi);border-radius:12px;padding:0;max-width:440px;width:calc(100% - 32px);background:#FFFDF6;color:var(--sumi);box-shadow:8px 8px 0 var(--sumi)}
+dialog::backdrop{background:rgba(30,26,23,.6)}
+.dlg{padding:28px 26px 24px}
+.dlg h2{font-family:var(--display);font-size:22px;margin:0 0 16px}
+.dlg dl{display:grid;grid-template-columns:5em 1fr;row-gap:6px;margin:0 0 16px;font-size:14.5px}
+.dlg dt{font-weight:700;color:var(--aka)}
+.dlg dd{margin:0}
+.dlg p{margin:0 0 20px;font-size:13px;color:var(--sumi-soft)}
+.dlg .btns a,.dlg .btns button{flex:1;min-width:150px;justify-content:center;text-align:center;padding:12px;font-size:14px;font-weight:700;border-radius:999px;border:3px solid var(--sumi);cursor:pointer;text-decoration:none}
+.dlg .btns a{background:var(--aka);color:#fff}
+.dlg .btns button{background:#fff}
+</style>
+</head>
+<body>
+
+<div class="demo-bar">制作実績用のデモサイトです。店舗・料金・空席情報はすべて架空です。制作：<a href="https://alicia0901.github.io/portfolio/">Alicia</a></div>
+
+<header class="site-head">
+  <div class="wrap">
+    <a class="logo" href="#top" aria-label="大衆酒場 まるよし トップへ"><span class="mon" aria-hidden="true">よ</span><span><small>大衆酒場</small><b>まるよし</b></span></a>
+    <nav class="head-nav" aria-label="ページ内">
+      <a href="#enkai">宴会コース</a><a href="#oshinagaki">品書き</a><a href="#seats">店内</a><a href="#access">アクセス</a><a class="cta" href="#reserve">宴会の空きを見る</a>
+    </nav>
+  </div>
+</header>
+
+<main id="top">
+  <div class="hero">
+    <div class="wrap">
+      <div>
+        <span class="tag">にしき町駅 西口 徒歩1分</span>
+        <h1>今日も、<br><em>おつかれさん。</em></h1>
+        <p class="lead">焼き鳥は一本140円から。仕事帰りの一杯も、四十名までの宴会も、まるよしで。</p>
+        <div class="btns">
+          <a class="btn red" href="#reserve">宴会の空きを見る</a>
+          <a class="btn plain" href="#oshinagaki">品書きを見る</a>
+        </div>
+      </div>
+      <div class="hero-photo">
+        <figure class="ph" data-label="赤提灯と店の外観"><img src="maruyoshi-hero.jpg" width="960" height="1200" alt="夕暮れの路地に灯る赤提灯と、まるよしの外観"></figure>
+        <div class="stamp" aria-hidden="true"><span>飲み放題付き<b>宴会</b>3,500円〜</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="ticker" aria-hidden="true">
+    <div><span>焼き鳥</span><span>もつ煮込み</span><span>刺身三点盛り</span><span>だし巻き</span><span>生ビール</span><span>ハイボール</span><span>宴会 2〜40名さま</span><span>焼き鳥</span><span>もつ煮込み</span><span>刺身三点盛り</span><span>だし巻き</span><span>生ビール</span><span>ハイボール</span><span>宴会 2〜40名さま</span></div>
+  </div>
+
+  <section id="reserve" aria-labelledby="board-t">
+    <div class="wrap">
+      <div class="head"><h2 id="board-t">宴会の空き状況</h2><p>ネットでそのまま予約できます</p></div>
+      <div class="board">
+        <div class="board-top">
+          <p>日にちと時間を選んでください。</p>
+          <p class="legend" aria-hidden="true"><span><b>◎</b>余裕あり</span><span><b>○</b>空きあり</span><span><b>△</b>残りわずか</span><span><b class="x">×</b>満席</span></p>
+        </div>
+        <div class="days" role="group" aria-label="日にちを選ぶ"></div>
+        <ul class="slots" aria-label="ご来店時間"></ul>
+        <div class="picker" hidden>
+          <p class="chosen" aria-live="polite"></p>
+          <label>人数<select id="rsvPeople"></select></label>
+          <label>コース<select id="rsvCourse">
+            <option value="まんぞく宴会 飲み放題2時間（3,500円）">まんぞく宴会 3,500円</option>
+            <option value="よくばり宴会 飲み放題2時間（4,500円）">よくばり宴会 4,500円</option>
+            <option value="まるよし大宴会 飲み放題2.5時間（5,500円）">まるよし大宴会 5,500円</option>
+            <option value="お席のみ（2時間）">お席のみ</option>
+          </select></label>
+          <button class="go" id="go" type="button">ご予約に進む</button>
+        </div>
+        <p class="board-foot">21名さま以上・貸切のご相談は、お電話で承ります。宴会コースは前日までのご予約でお願いします。</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="enkai" style="padding-top:0" aria-labelledby="enkai-t">
+    <div class="wrap">
+      <div class="head"><h2 id="enkai-t">宴会コース</h2><p>全コース飲み放題付き</p></div>
+      <div class="enkai">
+        <article class="course">
+          <header><small>気軽な飲み会に</small><h3>まんぞく宴会</h3></header>
+          <div class="body">
+            <p class="price">3,500円<small>税込・お一人さま</small></p>
+            <ul class="spec"><li>料理7品</li><li>飲み放題2時間</li></ul>
+            <ul class="menu"><li>お通し</li><li>シーザーサラダ</li><li>刺身二点盛り</li><li>焼き鳥盛り合わせ（5本）</li><li>鶏の唐揚げ</li><li>もつ煮込み</li><li>〆の焼きおにぎり</li></ul>
+          </div>
+        </article>
+        <article class="course best">
+          <header><small>いちばん人気</small><h3>よくばり宴会</h3></header>
+          <div class="body">
+            <p class="price">4,500円<small>税込・お一人さま</small></p>
+            <ul class="spec"><li>料理8品</li><li>飲み放題2時間</li><li>生ビール付き</li></ul>
+            <ul class="menu"><li>お通し</li><li>まるよしポテサラ</li><li>刺身三点盛り</li><li>焼き鳥盛り合わせ（7本）</li><li>だし巻き玉子</li><li>鶏の唐揚げ</li><li>もつ煮込み</li><li>〆の鶏そば</li></ul>
+          </div>
+        </article>
+        <article class="course">
+          <header><small>歓送迎会・忘年会に</small><h3>まるよし大宴会</h3></header>
+          <div class="body">
+            <p class="price">5,500円<small>税込・お一人さま</small></p>
+            <ul class="spec"><li>料理9品</li><li>飲み放題2.5時間</li><li>生ビール付き</li></ul>
+            <ul class="menu"><li>お通し</li><li>季節のサラダ</li><li>刺身五点盛り</li><li>焼き鳥盛り合わせ（9本）</li><li>だし巻き玉子</li><li>今月のおすすめ一品</li><li>鶏の唐揚げ</li><li>もつ鍋</li><li>〆の雑炊</li></ul>
+          </div>
+        </article>
+      </div>
+      <div class="enkai-photo">
+        <figure class="ph" data-label="宴会の卓"><img loading="lazy" src="maruyoshi-enkai.jpg" width="1600" height="1000" alt="大皿料理とジョッキが並ぶ宴会の卓"></figure>
+        <ul>
+          <li>幹事さまは1名さま無料（10名さま以上）</li>
+          <li>飲み放題は生ビール・ハイボール・サワー・日本酒など40種</li>
+          <li>アレルギーや苦手な食材は、ご予約のときにお知らせください</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section class="oshinagaki" id="oshinagaki" aria-labelledby="menu-t">
+    <div class="wrap">
+      <div class="head"><h2 id="menu-t">品書き</h2><p>一品料理もどうぞ（税込）</p></div>
+      <div class="wall">
+        <p class="tanzaku osusume"><small>今月のおすすめ</small><b class="osusume-name" style="font-weight:400"></b><span class="osusume-price"></span></p>
+        <p class="tanzaku">焼き鳥 もも<span><i class="tcy">140</i>円</span></p>
+        <p class="tanzaku">ねぎま<span><i class="tcy">140</i>円</span></p>
+        <p class="tanzaku">つくね<span><i class="tcy">180</i>円</span></p>
+        <p class="tanzaku">もつ煮込み<span><i class="tcy">480</i>円</span></p>
+        <p class="tanzaku">刺身三点盛り<span><i class="tcy">980</i>円</span></p>
+        <p class="tanzaku">ポテサラ<span><i class="tcy">390</i>円</span></p>
+        <p class="tanzaku">だし巻き玉子<span><i class="tcy">480</i>円</span></p>
+        <p class="tanzaku">鶏の唐揚げ<span><i class="tcy">580</i>円</span></p>
+        <p class="tanzaku">焼きおにぎり<span><i class="tcy">350</i>円</span></p>
+      </div>
+      <div class="wall-photos">
+        <div><figure class="ph" data-label="焼き鳥"><img loading="lazy" src="maruyoshi-yakitori.jpg" width="1500" height="1000" alt="炭火で焼き上げた焼き鳥の盛り合わせ"></figure><p class="cap">名物 焼き鳥。毎朝串打ちしています</p></div>
+        <div><figure class="ph" data-label="もつ煮込み"><img loading="lazy" src="maruyoshi-motsuni.jpg" width="1500" height="1000" alt="ねぎをのせた味噌仕立てのもつ煮込み"></figure><p class="cap">開店から継ぎ足しのもつ煮込み</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="seats" aria-labelledby="seats-t">
+    <div class="wrap">
+      <div class="head"><h2 id="seats-t">店内</h2><p>全40席</p></div>
+      <div class="seats">
+        <div class="seat">
+          <figure class="ph" data-label="焼き場前のカウンター"><img loading="lazy" src="maruyoshi-counter.jpg" width="1200" height="900" alt="焼き場の前に並ぶカウンター席"></figure>
+          <h3>カウンター<small>10席</small></h3>
+          <p>焼き場の目の前。おひとりさまの一杯にも。</p>
+        </div>
+        <div class="seat">
+          <figure class="ph" data-label="テーブル席"><img loading="lazy" src="maruyoshi-table.jpg" width="1200" height="900" alt="4人掛けのテーブル席"></figure>
+          <h3>テーブル<small>14席</small></h3>
+          <p>2〜6名さまの飲み会に。</p>
+        </div>
+        <div class="seat">
+          <figure class="ph" data-label="座敷"><img loading="lazy" src="maruyoshi-zashiki.jpg" width="1200" height="900" alt="長机が並ぶ広い座敷"></figure>
+          <h3>座敷<small>16席</small></h3>
+          <p>店内まるごと貸切なら、最大40名さままで。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="howto" style="padding-top:0" aria-labelledby="howto-t">
+    <div class="wrap">
+      <div class="head"><h2 id="howto-t">ご予約案内</h2><p>かんたん3ステップ</p></div>
+      <div class="howto">
+        <div><h3>空きを見る</h3><p>上の空き状況から、日にち・時間・人数・コースを選びます。</p></div>
+        <div><h3>予約する</h3><p>お名前と連絡先を入れたら完了。確認のメールがすぐ届きます。</p></div>
+        <div><h3>満席のときは</h3><p>キャンセル待ちに登録すると、空いたときにメールでお知らせします。<br><a href="#reserve">空き状況を見る</a></p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="access" style="padding-top:0" aria-labelledby="access-t">
+    <div class="wrap">
+      <div class="head"><h2 id="access-t">アクセス</h2><p>駅から赤提灯が見えます</p></div>
+      <div class="access">
+        <dl class="info">
+          <dt>住所</dt><dd>東京都架空区にしき町二丁目3-5</dd>
+          <dt>最寄り駅</dt><dd>にしき町駅 西口より徒歩1分</dd>
+          <dt>営業時間</dt><dd>16:00〜24:00（L.O. 23:30）</dd>
+          <dt>定休日</dt><dd>日曜日</dd>
+          <dt>電話</dt><dd>00-0000-0000（架空）</dd>
+          <dt>お支払い</dt><dd>現金・各種カード・QRコード決済</dd>
+        </dl>
+        <div class="map" role="img" aria-label="地図のイメージ"><b>まるよし</b><i>にしき町駅</i><span>地図はイメージです</span></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="logo"><span class="mon" aria-hidden="true">よ</span><b>まるよし</b></div>
+  <p>大衆酒場 まるよし（架空店舗）｜制作実績用デモサイト<br>空席表示は、制作者が開発した<a href="https://alicia0901.github.io/portfolio/project.html?id=inshokuten">飲食店予約システム</a>との連携イメージです<br>写真：AI生成イメージ｜制作：<a href="https://alicia0901.github.io/portfolio/">Alicia</a></p>
+</footer>
+
+<dialog id="dlg" aria-labelledby="dlg-t">
+  <div class="dlg">
+    <h2 id="dlg-t"></h2>
+    <dl></dl>
+    <p class="dlg-note"></p>
+    <div class="btns">
+      <a href="https://alicia0901.github.io/portfolio/project.html?id=inshokuten">予約システムを見る</a>
+      <button type="button" data-close>閉じる</button>
+    </div>
+  </div>
+</dialog>
+
+<script>
+/* 写真枠：画像が読めないときは枠のラベルを見せる */
+document.querySelectorAll("figure.ph img").forEach((img) => {
+  const fig = img.closest("figure");
+  const empty = () => fig.classList.add("is-empty");
+  if (img.complete && img.naturalWidth === 0) empty();
+  img.addEventListener("error", empty);
+  img.addEventListener("load", () => fig.classList.remove("is-empty"));
+});
+
+/* 今月のおすすめ（表示時の月で切り替え） */
+const OSUSUME = [
+  ["寒ぶりのお造り","880円"],["牡蠣フライ","780円"],["菜の花のおひたし","420円"],["初鰹のたたき","880円"],
+  ["新玉ねぎの丸焼き","480円"],["鮎の塩焼き","750円"],["枝豆の炭火焼き","450円"],["とうもろこしのかき揚げ","520円"],
+  ["秋刀魚の塩焼き","680円"],["きのこのバター醤油","520円"],["牡蠣の土手焼き","780円"],["もつ鍋（一人前）","980円"]
+];
+const [oName, oPrice] = OSUSUME[new Date().getMonth()];
+document.querySelector(".osusume-name").textContent = oName;
+document.querySelector(".osusume-price").innerHTML = oPrice.replace(/^(\d+)/, '<i class="tcy">$1</i>');
+
+/* 空き状況のデモ。
+   実店舗では飲食店予約システム（Google Apps Script）が
+   「総座席数 × コースのご滞在時間」から時間帯ごとの空席を計算して返します。
+   このページでは日付と時間から決まった値を生成して表示しています。 */
+const TOTAL = 40;
+const CLOSED = [0]; // 日曜定休
+const TIMES = ["17:00","17:30","18:00","18:30","19:00","19:30","20:00","20:30","21:00"];
+const PEAK = [2,4,6,8,9,9,7,4,2];
+const WD = ["日","月","火","水","木","金","土"];
+const daysEl = document.querySelector(".days");
+const slotsEl = document.querySelector(".slots");
+const picker = document.querySelector(".picker");
+const chosen = document.querySelector(".chosen");
+const people = document.getElementById("rsvPeople");
+const go = document.getElementById("go");
+const dlg = document.getElementById("dlg");
+
+for (let n = 2; n <= 20; n++) people.add(new Option(`${n}名`, String(n), false, n === 4));
+
+const ymd = (d) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
+const label = (d) => `${d.getMonth()+1}月${d.getDate()}日（${WD[d.getDay()]}）`;
+function openDays(count){
+  const out = [];
+  const t = new Date(); t.setHours(12,0,0,0);
+  for (let i = 0; out.length < count && i < 30; i++){
+    const d = new Date(t); d.setDate(t.getDate() + i);
+    if (!CLOSED.includes(d.getDay())) out.push(d);
+  }
+  return out;
+}
+function seatsLeft(d, idx){
+  const seed = d.getDate()*37 + d.getMonth()*11 + idx*17;
+  const weekend = d.getDay() === 5 || d.getDay() === 6 ? 8 : 0;
+  return Math.max(0, TOTAL - Math.min(TOTAL, PEAK[idx]*4 + weekend + (seed % 13)));
+}
+const mark = (left) => left === 0 ? ["×","満席"] : left <= 5 ? ["△",`残り${left}席`] : left <= 15 ? ["○","空きあり"] : ["◎","余裕あり"];
+
+const DAYS = openDays(7);
+let state = { day: 0, time: null, left: 0 };
+
+function renderDays(){
+  daysEl.replaceChildren();
+  const today = ymd(new Date());
+  DAYS.forEach((d, i) => {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.dataset.day = ymd(d);
+    if (d.getDay() === 6) b.className = "sat";
+    b.setAttribute("aria-pressed", String(i === state.day));
+    b.innerHTML = `${ymd(d) === today ? "今日" : `${d.getMonth()+1}/${d.getDate()}`}<small>${label(d)}</small>`;
+    b.addEventListener("click", () => { state = { day: i, time: null, left: 0 }; picker.hidden = true; renderDays(); renderSlots(); });
+    daysEl.appendChild(b);
+  });
+}
+function renderSlots(){
+  const d = DAYS[state.day];
+  slotsEl.replaceChildren();
+  TIMES.forEach((t, idx) => {
+    const left = seatsLeft(d, idx);
+    const [m, s] = mark(left);
+    const li = document.createElement("li");
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "slot" + (left === 0 ? " full" : "");
+    b.dataset.slot = "";
+    b.dataset.date = ymd(d);
+    b.dataset.time = t;
+    b.dataset.left = String(left);
+    b.setAttribute("aria-pressed", String(state.time === t));
+    b.setAttribute("aria-label", `${t} ${s}`);
+    b.innerHTML = `<span class="t">${t}</span><span class="m" aria-hidden="true">${m}</span><span class="s">${s}</span>`;
+    b.addEventListener("click", () => { state.time = t; state.left = left; renderSlots(); showPicker(); });
+    li.appendChild(b); slotsEl.appendChild(li);
+  });
+}
+const isWait = () => state.left === 0 || Number(people.value) > state.left;
+function updateGo(){
+  const wait = isWait();
+  go.textContent = wait ? "キャンセル待ちに登録" : "ご予約に進む";
+  go.classList.toggle("wait", wait);
+}
+function showPicker(){
+  picker.hidden = false;
+  const full = state.left === 0;
+  chosen.textContent = `${label(DAYS[state.day])} ${state.time}〜` + (full ? "　満席" : `　残り${state.left}席`);
+  updateGo();
+}
+people.addEventListener("change", updateGo);
+go.addEventListener("click", () => {
+  const wait = isWait();
+  dlg.querySelector("h2").textContent = wait ? "キャンセル待ちのご登録内容" : "ご予約内容の確認";
+  const dl = dlg.querySelector("dl");
+  dl.replaceChildren();
+  [["日時", `${label(DAYS[state.day])} ${state.time}〜`], ["人数", `${people.value}名`], ["コース", document.getElementById("rsvCourse").value]]
+    .forEach(([k, v]) => {
+      const dt = document.createElement("dt"); dt.textContent = k;
+      const dd = document.createElement("dd"); dd.textContent = v;
+      dl.append(dt, dd);
+    });
+  dlg.querySelector(".dlg-note").textContent = wait
+    ? "デモのため登録はされません。実際のシステムでは、お席が空いたときに自動でメールが届きます。"
+    : "デモのため予約は確定しません。実際のシステムでは、ご予約の受付・確認メール・店舗カレンダーへの登録までが自動で行われます。";
+  dlg.showModal();
+});
+dlg.addEventListener("click", (e) => { if (e.target === dlg || e.target.hasAttribute("data-close")) dlg.close(); });
+renderDays(); renderSlots();
+</script>
+</body>
+</html>
